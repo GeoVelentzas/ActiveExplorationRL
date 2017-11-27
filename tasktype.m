@@ -9,7 +9,7 @@ end
 
 switch(type)
     case 'non-stationary0'
-            if (t >= 5001)&&(~switched)&&(s==1) %from [2 3 4 5 6] to [1 4 3 2 5]with different parameter values...
+            if (t >= 5001) %from [2 3 4 5 6] to [1 4 3 2 5]with different parameter values...
                 BBT.engMu(1) = 0;         
                 BBT.engMu(2) = -20;
                 BBT.engMu(3) = 10;
@@ -20,7 +20,7 @@ switch(type)
             end
     
     case 'non-stationary1'
-        if (t >= 5001)&&(~switched)&&(s==1) %from [2 3 4 5 6] to [1 4 3 2 5]with different parameter values...
+        if (t == 5001) %from [2 3 4 5 6] to [1 4 3 2 5]with different parameter values...
          
          BBT.optimal(1) = 1;
          BBT.P(1, :, :) = 0; %flush
