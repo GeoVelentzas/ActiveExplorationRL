@@ -2,7 +2,7 @@
 
 clear all
 close all
-clc
+%clc
 
 whichModel = 5;
 runOptimizedModels = 5;
@@ -77,9 +77,6 @@ end
 
 %% showresults 2
 visual1;
-
-
-
 
 
 
