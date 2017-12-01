@@ -26,7 +26,7 @@ metaparams2(:, 1, :) = BBR.METAPARAMS2';                        %initial metapar
 StatesVisited = s;                                              %track States visited in a list (array)
 
 %% Run Task ... Decide-Transition-Observe-Learn and Track History
-task = 'non-stationary1';
+task = 'non-stationary2';
 for iii=1:episodeLength
     BBT = tasktype(BBT, iii ,s , task);                         %the task might change dynamically
     [ BBT, BBR, s, a, logs ] = BBrunTrial( BBT, BBR, s, a );    %decide-transition-observe-learn

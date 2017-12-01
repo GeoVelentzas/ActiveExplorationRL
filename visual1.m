@@ -1,3 +1,5 @@
+T = episodeLength;
+global cpTime
 b = [0.0    0.0   0.0;
      0.3    0.3   0.3;
      0.3    0.0   0.0;
@@ -6,7 +8,6 @@ b = [0.0    0.0   0.0;
      0.6    0.6   0.6];
       
 close all;
-global cpTime
 
 %% first figure  - actions + total engagement%%
 figure(1);

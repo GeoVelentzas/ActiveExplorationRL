@@ -1,7 +1,6 @@
-function BBT = tasktype( BBT, t, s, type )
+function BBT = tasktype( BBT, t, statenow, type )
 
 global cpTime
-
 persistent switched;
 if isempty(switched) 
     switched = false;
@@ -71,6 +70,8 @@ switch(type)
          BBT.P(1, 1, 1) = 0; %correct action doesn't lead to the same state
          BBT.P(1, 1, 2) = 1; %correct action leads to the next state
          BBT.engMu(1) = 0;
+         switched = true;
+         cpTime = t;
      end
      if (t == 5001)
          BBT.optimal(4) = 4;
