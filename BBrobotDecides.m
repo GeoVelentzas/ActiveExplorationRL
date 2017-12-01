@@ -1,4 +1,4 @@
-function [BBR, a, probaA, probaPISA] = BBrobotDecides(BBT, BBR, whichModel, s)
+function [BBR, a, probaA, probaPISA] = BBrobotDecides(BBT, BBR, s)
 
     % BBR is a structure containing the Baby Robot
     % s = current state
@@ -8,19 +8,8 @@ function [BBR, a, probaA, probaPISA] = BBrobotDecides(BBT, BBR, whichModel, s)
     BBR.VC = BBR.wC(s); % from the Critic of CACLA
     
     %% decision of the discrete action to be performed by the robot
-    switch(whichModel)
-        case 1 %% Q-learning
-            [ a.action, BBR.PA ] = valueBasedDecision( BBR.Q(s,:), BBR.decisionRule, BBR.beta, 0 );
-        case 5 %% NTUA
-            %BBR.beta = max(0,BBR.metaparam+2); % meta-learning
-            %[ a.action, BBR.PA ] = valueBasedDecision( BBR.Q(s,:), BBR.decisionRule, BBR.beta, 0 );
-            
-            % NEW MODEL HERE !!!!!!!!!!!!!!!!!!!!!!!
-            BBR.BETAS(s) = max(0, BBR.METAPARAMS(s)+10);
-            [a.action, BBR.PA] = valueBasedDecision(BBR.Q(s,:), BBR.decisionRule, BBR.BETAS(s), 0);
-        case 8 %% USTL model
-            
-    end
+    BBR.BETAS(s) = max(0, BBR.METAPARAMS(s)+10);
+    [a.action, BBR.PA] = valueBasedDecision(BBR.Q(s,:), BBR.decisionRule, BBR.BETAS(s), 0);
     probaA = BBR.PA(BBT.optimal(s)); % log de la proba qu'avait le mod�le d'effectuer l'action optimale
     
     %% decision of the width sigma of the Gaussian from which to draw a continuous param
@@ -30,39 +19,35 @@ function [BBR, a, probaA, probaPISA] = BBrobotDecides(BBT, BBR, whichModel, s)
     % a.param and variance = BBR.sigma.
     % Each model has a different way of determining BBR.sigma.
     %% UPDATING sigma for CACLA actor exploration
-    switch(whichModel)
-        case 5 %% Schweighofer 1
-            BBR.sigma = 20 / (1 + 19 * exp(BBR.gainSigma * BBR.metaparam));
-            BBR.sigma = 40 / (1 + 39 * exp(BBR.gainSigma * BBR.metaparam));
-            %NEW MODEL V3 HERE !!!!!!!!!!!!!!!!!!!!
-            for i = 1:BBT.nA
-                if i == a .action
-                    %BBR.SIGMAS2(s, i) = 20./(1+19*exp(BBR.gainSigma*BBR.METAPARAMS2(s, i)));
-                    %BBR.SIGMAS2(s, i) = max(BBR.SIGMAS2(s, i), 0.1);
-                    %BBR.SIGMAS2(s, i) = min(BBR.SIGMAS2(s, i), 20);
-                    
-                    %stable version
-                    BBR.SIGMAS2(s, i) = 40./(1+39*exp(BBR.gainSigma*BBR.METAPARAMS2(s, i))); %increase this.. 20 is not enough
-                    BBR.SIGMAS2(s, i) = max(BBR.SIGMAS2(s, i), 0.1);
-                    BBR.SIGMAS2(s, i) = min(BBR.SIGMAS2(s, i), 40);
-                    
-%                     BBR.gainSigma = 1e8;
-%                     power = 1000;
-%                     BBR.SIGMAS2(s, i) = 80*1./(1+1*exp(BBR.gainSigma*BBR.METAPARAMS2(s, i))); %increase this.. 20 is not enough
-%                     BBR.SIGMAS2(s, i) = max(BBR.SIGMAS2(s, i), 0.1);
-%                     BBR.SIGMAS2(s, i) = min(BBR.SIGMAS2(s, i), 40);
-           
-                else
-                    %BBR.SIGMAS2(s, i) = max(BBR.SIGMAS2(s,i)+0.1, 0.1);
-                    %BBR.SIGMAS2(s, i) = min(BBR.SIGMAS2(s, i), 40);
-                end
-            end
-            %bar3(BBR.SIGMAS2);
-            %pause(0.1);
+    BBR.sigma = 20 / (1 + 19 * exp(BBR.gainSigma * BBR.metaparam));
+    BBR.sigma = 40 / (1 + 39 * exp(BBR.gainSigma * BBR.metaparam));
+    %NEW MODEL V3 HERE !!!!!!!!!!!!!!!!!!!!
+    for i = 1:BBT.nA
+        if i == a .action
+            %BBR.SIGMAS2(s, i) = 20./(1+19*exp(BBR.gainSigma*BBR.METAPARAMS2(s, i)));
+            %BBR.SIGMAS2(s, i) = max(BBR.SIGMAS2(s, i), 0.1);
+            %BBR.SIGMAS2(s, i) = min(BBR.SIGMAS2(s, i), 20);
             
-        case 8 %% USTL
+            %stable version
+            BBR.SIGMAS2(s, i) = 40./(1+39*exp(BBR.gainSigma*BBR.METAPARAMS2(s, i))); %increase this.. 20 is not enough
+            BBR.SIGMAS2(s, i) = max(BBR.SIGMAS2(s, i), 0.1);
+            BBR.SIGMAS2(s, i) = min(BBR.SIGMAS2(s, i), 40);
             
+            %                     BBR.gainSigma = 1e8;
+            %                     power = 1000;
+            %                     BBR.SIGMAS2(s, i) = 80*1./(1+1*exp(BBR.gainSigma*BBR.METAPARAMS2(s, i))); %increase this.. 20 is not enough
+            %                     BBR.SIGMAS2(s, i) = max(BBR.SIGMAS2(s, i), 0.1);
+            %                     BBR.SIGMAS2(s, i) = min(BBR.SIGMAS2(s, i), 40);
+            
+        else
+            %BBR.SIGMAS2(s, i) = max(BBR.SIGMAS2(s,i)+0.1, 0.1);
+            %BBR.SIGMAS2(s, i) = min(BBR.SIGMAS2(s, i), 40);
+        end
     end
+    %bar3(BBR.SIGMAS2);
+    %pause(0.1);
+    
+    
     if (BBR.sigma <= 0.1)
         BBR.sigma = 0.1;
     end

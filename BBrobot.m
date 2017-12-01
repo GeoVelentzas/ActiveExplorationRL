@@ -31,8 +31,8 @@ function BBR = BBrobot(BBtask)
     %I have changed gainSigma in BBrobotLearns!
     
     % Initialize Schweighofer meta-learning
-    tau1 = 100; % short-term time constant
-    tau2 = 1000; % long-term time constant
+    tau1 = 10; % short-term time constant
+    tau2 = 5; % long-term time constant
     star = 0; % short-term running average
     mtar = 0; % mid-term running average
     mu = 0.5; % learning rate of meta-parameter

@@ -1,4 +1,4 @@
-function [ BBT, BBR, s, a, logs ] = BBrunTrial( BBT, BBR, whichModel, s, a )
+function [ BBT, BBR, s, a, logs ] = BBrunTrial( BBT, BBR, s, a )
     
     % BBT = task used for Baby Robot learning
     % BBR = structure containing the baby robot
@@ -57,7 +57,7 @@ function [ BBT, BBR, s, a, logs ] = BBrunTrial( BBT, BBR, whichModel, s, a )
     s = y; % the next state becomes the current state
     
     %% HAVE THE ROBOT MAKE A DECISION
-    [BBR, a, probaA, probaPISA] = BBrobotDecides( BBT, BBR, whichModel, s );
+    [BBR, a, probaA, probaPISA] = BBrobotDecides( BBT, BBR, s );
     
     % LOGS
     % logs n�cessaires � l'optimisation
