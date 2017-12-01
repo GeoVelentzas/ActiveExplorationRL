@@ -1,67 +1,44 @@
 %% main
 clear all; close all; clc
 
-runOptimizedModels = 5;
-episodeLength = 10000;
-vertiBars = true;
+%% Initialize Task-Robot
+episodeLength = 10000;          %length of one hyper-session
+BBT = BBsetTask();              %initialize task
+BBR = BBrobot(BBT);             %initialize robot
+BBR = BBinitModelParam( BBR );  %initialize parameters (Mehdi's optim)
+BBR.tau1 = 10;                  %hardcoded... needs to be optimized 
+BBR.tau2 = 5;                   %hardcoded... needs to be optimized
 
-% define Task
-BBT = BBsetTask();
+%% Initialize variables
+s = drand01(BBT.P0);                                            %initial state is s
+[BBR, a] = BBrobotDecides(BBT, BBR, s);                         %first action decision
+OptimalActions = nan*ones(BBT.nA, episodeLength+1, BBT.nS);     %track optimal actions and parameters (nAxTxnS)
+OptimalActions(BBT.optimal(s), 1, s) = BBT.engMu(s);            %initial optimal action and parameter in s
+BBR.ActionsTaken = nan*zeros(BBT.nA,episodeLength+1, BBT.nS);   %for tracking actions taken using nans for plots... hardcoded....!
+sigmas2 = nan*zeros(BBT.nA, episodeLength+1, BBT.nS);           %tracking gaussian exploration stds (nAxTxnS)
+betas2 = zeros(BBT.nS, episodeLength+1);                        %tracking inverse temperature (nSxT)
+engagement = zeros(1,episodeLength);                            %tracking engagement (1xT)
+metaparams2 = zeros(BBT.nA, episodeLength+1,BBT.nS);            %tracking metaparams (nAxTxnS)
+sigmas2(:, 1, :) = BBR.SIGMAS2';                                %gaussian exploration stds at first timestep
+betas2(:, 1) = BBR.BETAS;                                       %betas at first timestep
+engagement(1, 1) = BBT.cENG;                                    %initial engagement
+metaparams2(:, 1, :) = BBR.METAPARAMS2';                        %initial metaparams values
+StatesVisited = s;                                              %track States visited in a list (array)
 
-% define baby robot
-BBR = BBrobot(BBT);
-
-% initialize model optimized parameters
-BBR = BBinitModelParam( BBR );
-BBR.tau1 = 10; %hardcoded...
-BBR.tau2 = 5;  %hardcoded...
-
-% initial state
-s = drand01(BBT.P0); %THIS WILL BE THE FIRST STATE...
-
-
-OptimalActions = nan*ones(BBT.nA, episodeLength+1, BBT.nS);
-OptimalActions(BBT.optimal(s), 1, s) = BBT.engMu(s);
-BBR.ActionsTaken = nan*zeros(BBT.nA,episodeLength+1, BBT.nS);
-
-% initial action by the robot
-[BBR, a] = BBrobotDecides(BBT, BBR, s);
-
-% init LOGS
-LOG_FILES = [s a.action a.param 0 s a.action a.param BBT.cENG BBR.delta BBR.VC BBR.ACT BBR.PA zeros(1, BBR.nA) 0 BBR.sigma 0 0 0 BBR.BETAS BBR.SIGMAS];
-sigmas2 = nan*zeros(BBT.nA, episodeLength+1, BBT.nS);
-betas2 = zeros(BBT.nS, episodeLength+1);
-engagement = zeros(1,episodeLength);
-metaparams2 = zeros(BBT.nA, episodeLength+1,BBT.nS);
-
-sigmas2(:, 1, :) = BBR.SIGMAS2';
-betas2(:, 1) = BBR.BETAS;
-engagement(1, 1) = BBT.cENG;
-metaparams2(:, 1, :) = BBR.METAPARAMS2';
-StatesVisited = s;
-
-
-%% RUN TASK
-T = episodeLength; 
-t = 1:episodeLength;
-
+%% Run Task ... Decide-Transition-Observe-Learn and Track History
+task = 'non-stationary1';
 for iii=1:episodeLength
-    BBT = tasktype(BBT, iii ,s ,'non-stationary1');
-    [ BBT, BBR, s, a, logs ] = BBrunTrial( BBT, BBR, s, a );
-    LOG_FILES = [LOG_FILES ; [logs.s logs.oldaction logs.oldparam logs.reward logs.y logs.action logs.param logs.engagement logs.delta logs.VC logs.ACT logs.PA logs.Q logs.RPEQ logs.sigma logs.star logs.mtar logs.meta logs.BETAS logs.SIGMAS]];
-
-    sigmas2(:,iii+1, :) = BBR.SIGMAS2';
-    betas2(:,iii+1) = BBR.BETAS;
-    engagement(1,iii+1) = BBT.cENG;
-    metaparams2(:,iii+1, :) = BBR.METAPARAMS2';
-    OptimalActions(BBT.optimal(s), iii+1, s) = BBT.engMu(s);
+    BBT = tasktype(BBT, iii ,s , task);                         %the task might change dynamically
+    [ BBT, BBR, s, a, logs ] = BBrunTrial( BBT, BBR, s, a );    %decide-transition-observe-learn
+    sigmas2(:,iii+1, :) = BBR.SIGMAS2';                         %track gaussian stds
+    betas2(:,iii+1) = BBR.BETAS;                                %track inverse temperature beta
+    engagement(1,iii+1) = BBT.cENG;                             %track engagement
+    metaparams2(:,iii+1, :) = BBR.METAPARAMS2';                 %track values of metaparameters
+    OptimalActions(BBT.optimal(s), iii+1, s) = BBT.engMu(s);    %track visited States
     StatesVisited(iii+1) = s;
-    
 end
 
-
-
-%% showresults 2
+%% Show Results
 visual1;
 
 
