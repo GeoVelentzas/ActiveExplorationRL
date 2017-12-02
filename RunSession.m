@@ -1,4 +1,4 @@
-function [Sigmas, Betas, Engagement, ActionsTaken, OptimalActions, StatesVisited, Metaparams] = RunSession( task )
+function [ Sess ] = RunSession( task )
 
 %% Initialize Task-Robot
 episodeLength = 10000;          %length of one hyper-session
@@ -36,7 +36,14 @@ for iii=1:episodeLength
     OptimalActions(BBT.optimal(s), iii+1, s) = BBT.engMu(s);    %track visited States
     StatesVisited(iii+1) = s;
 end
-ActionsTaken = BBR.ActionsTaken;
-
+Sess.Sigmas = Sigmas;
+Sess.Betas = Betas;
+Sess.Engagement = Engagement;
+Sess.ActionsTaken = BBR.ActionsTaken;
+Sess.OptimalActions = OptimalActions;
+Sess.StatesVisited = StatesVisited;
+Sess.Metaparams = Metaparams;
+Sess.Hits = BBR.Hits;
+Sess.DHits = BBR.DHits;
 end
 
