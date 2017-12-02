@@ -1,17 +1,19 @@
 function [ Hsess ] = RunHyperSessions( nhyper, task )
-Hsess.Sigmas = [];
-Hsess.Betas = [];
-Hsess.Engagement = [];
-Hsess.ActionsTaken = [];
-Hsess.OptimalActions = [];
-Hsess.StatesVisited = [];
-Hsess.Metaparams = [];
-Hsess.Hits = [];
-Hsess.DHits = [];
-Hsess.nHyper = nhyper;
-Hsess.Task = task;
+
+Hsess.Sigmas = [];              %[(nAxnhyper)xTxnS]
+Hsess.Betas = [];               %[(nSxnhyper)xT]
+Hsess.Engagement = [];          %[nhyperxT]
+Hsess.ActionsTaken = [];        %[(nAxnhyper)xTxnS]
+Hsess.OptimalActions = [];      %[(nAxnhyper)xTxnS]
+Hsess.StatesVisited = [];       %[nhyperxT]
+Hsess.Metaparams = [];          %[(nAxnhyper)xTxnS]
+Hsess.Hits = [];                %[nhyperxT]
+Hsess.DHits = [];               %[nhyperxT]
+Hsess.nHyper = nhyper;          %number of hypersessions
+Hsess.Task = task;              %type of task (e.g 'non-stationary1')
 
 for i = 1:nhyper
+    disp(['running session: ', num2str(i)]);
     [Sess]= RunSession(task);
     Hsess.Sigmas = [Hsess.Sigmas; Sess.Sigmas];
     Hsess.Betas = [Hsess.Betas; Sess.Betas];
