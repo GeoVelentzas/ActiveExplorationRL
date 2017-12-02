@@ -1,5 +1,5 @@
 %% main
-clear all; close all; clc
+% clear all; %close all; clc
 
 %% Initialize Task-Robot
 episodeLength = 10000;          %length of one hyper-session
@@ -29,7 +29,7 @@ StatesVisited = s;                                              %track States vi
 task = 'non-stationary2';
 for iii=1:episodeLength
     BBT = tasktype(BBT, iii ,s , task);                         %the task might change dynamically
-    [ BBT, BBR, s, a, logs ] = BBrunTrial( BBT, BBR, s, a );    %decide-transition-observe-learn
+    [ BBT, BBR, s, a ] = BBrunTrial( BBT, BBR, s, a );    %decide-transition-observe-learn
     sigmas2(:,iii+1, :) = BBR.SIGMAS2';                         %track gaussian stds
     betas2(:,iii+1) = BBR.BETAS;                                %track inverse temperature beta
     engagement(1,iii+1) = BBT.cENG;                             %track engagement
