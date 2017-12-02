@@ -1,12 +1,12 @@
 function [ Sess ] = RunSession( task )
 
 %% Initialize Task-Robot
-episodeLength = 10000;          %length of one hyper-session
-BBT = BBsetTask();              %initialize task
-BBR = BBrobot(BBT);             %initialize robot
-BBR = BBinitModelParam( BBR );  %initialize parameters (Mehdi's optim)
-BBR.tau1 = 10;                  %hardcoded... needs to be optimized
-BBR.tau2 = 5;                   %hardcoded... needs to be optimized
+episodeLength = 10000;                                          %length of one hyper-session
+BBT = BBsetTask();                                              %initialize task
+BBR = BBrobot(BBT);                                             %initialize robot
+BBR = BBinitModelParam( BBR );                                  %initialize parameters (Mehdi's optim)
+BBR.tau1 = 10;                                                  %hardcoded... needs to be optimized
+BBR.tau2 = 5;                                                   %hardcoded... needs to be optimized
 
 %% Initialize variables
 s = drand01(BBT.P0);                                            %initial state is s
@@ -25,25 +25,26 @@ Metaparams(:, 1, :) = BBR.METAPARAMS2';                         %initial metapar
 StatesVisited = s;                                              %track States visited in a list (array)
 
 %% Run Task ... Decide-Transition-Observe-Learn and Track History
-
 for iii=1:episodeLength
     BBT = tasktype(BBT, iii ,s , task);                         %the task might change dynamically
-    [ BBT, BBR, s, a, logs ] = BBrunTrial( BBT, BBR, s, a );    %decide-transition-observe-learn
+    [ BBT, BBR, s, a ] = BBrunTrial( BBT, BBR, s, a );          %decide-transition-observe-learn
     Sigmas(:,iii+1, :) = BBR.SIGMAS2';                          %track gaussian stds
     Betas(:,iii+1) = BBR.BETAS;                                 %track inverse temperature beta
     Engagement(1,iii+1) = BBT.cENG;                             %track engagement
     Metaparams(:,iii+1, :) = BBR.METAPARAMS2';                  %track values of metaparameters
-    OptimalActions(BBT.optimal(s), iii+1, s) = BBT.engMu(s);    %track visited States
-    StatesVisited(iii+1) = s;
+    OptimalActions(BBT.optimal(s), iii+1, s) = BBT.engMu(s);    %track Optimal Actions
+    StatesVisited(iii+1) = s;                                   %track visited States
 end
-Sess.Sigmas = Sigmas;
-Sess.Betas = Betas;
-Sess.Engagement = Engagement;
-Sess.ActionsTaken = BBR.ActionsTaken;
-Sess.OptimalActions = OptimalActions;
-Sess.StatesVisited = StatesVisited;
-Sess.Metaparams = Metaparams;
-Sess.Hits = BBR.Hits;
-Sess.DHits = BBR.DHits;
+
+%% Save Session variables
+Sess.Sigmas = Sigmas;                                           %Sigmas: (nAxTxnS)
+Sess.Betas = Betas;                                             %Betas:  (nSxT)
+Sess.Engagement = Engagement;                                   %Engagement: (1xT)
+Sess.ActionsTaken = BBR.ActionsTaken;                           %ActionsTaken: (nAxTxnS)
+Sess.OptimalActions = OptimalActions;                           %OptimalActions: (nAxTxnS)
+Sess.StatesVisited = StatesVisited;                             %StatesVisited: (1xT)
+Sess.Metaparams = Metaparams;                                   %Metaparams: (nAxTxnS)
+Sess.Hits = BBR.Hits;                                           %Hits: (1xT)
+Sess.DHits = BBR.DHits;                                         %DHits: (1xT)
 end
 
