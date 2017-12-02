@@ -1,4 +1,4 @@
-function [ BBT, BBR, s, a, logs ] = BBrunTrial( BBT, BBR, s, a )
+function [ BBT, BBR, s, a ] = BBrunTrial( BBT, BBR, s, a )
     
     % BBT = task used for Baby Robot learning
     % BBR = structure containing the baby robot
@@ -58,44 +58,6 @@ function [ BBT, BBR, s, a, logs ] = BBrunTrial( BBT, BBR, s, a )
     
     %% HAVE THE ROBOT MAKE A DECISION
     [BBR, a, probaA, probaPISA] = BBrobotDecides( BBT, BBR, s );
-    
-    % LOGS
-    % logs n�cessaires � l'optimisation
-    logs.reward = r;
-    logs.engagement = BBT.cENG;
-    logs.probaA = probaA;
-    logs.probaPISA = probaPISA;
-    % logs n�cessaires pour le main et l'affichage des figures
-    logs.s = olds;
-    logs.oldaction = olda.action;
-    logs.oldparam = olda.param;
-    logs.y = y;
-    logs.action = a.action;
-    logs.param = a.param;
-    logs.delta = BBR.delta;
-    logs.VC = BBR.VC;
-    logs.ACT = BBR.wA(olds,:); %BBR.ACT;
-    logs.PA = BBR.PA;
-    logs.Q = BBR.Q(olds, :);
-    logs.RPEQ = BBR.RPEQ(olda.action);
-    logs.sigma = BBR.sigma;
-    logs.star = BBR.star;
-    logs.mtar = BBR.mtar;
-    logs.meta = BBR.metaparam;
-    %logs
-    
-    %NEW MODEL V3 HERE !!!!!!!!!!!!!!!!!!!!!!
-    logs.MTARS = BBR.MTARS;
-    logs.STARS = BBR.STARS;
-    logs.METAPARAMS = BBR.METAPARAMS;
-    logs.SIGMAS = BBR.SIGMAS;
-    logs.BETAS = BBR.BETAS;
-    logs.SIGMAS2 = BBR.SIGMAS2;
-    logs.time_sa = BBR.time_sa;
-    
-    
-    
-    
     
     
     
