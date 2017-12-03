@@ -7,6 +7,8 @@ if isempty(switched)
 end
 
 switch(type)
+    case 'stationary'
+        ;
     case 'non-stationary0'
             if (t >= 5001) %from [2 3 4 5 6] to [1 4 3 2 5]with different parameter values...
                 BBT.engMu(1) = 0;         

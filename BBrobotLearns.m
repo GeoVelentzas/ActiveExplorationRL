@@ -62,7 +62,7 @@ function BBR = BBrobotLearns( BBR, s, a, y, r )
     
     %% UPDATING THE ACTOR
     % updating only for action performed a.action
-    if BBR.delta>0    
+    %if BBR.delta>0    
       BBR.wA(s, a.action) = BBR.wA(s, a.action) + BBR.alphaA * BBR.delta * (a.param - BBR.ACT(a.action));
-    end
+    %end
 end

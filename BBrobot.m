@@ -58,6 +58,7 @@ function BBR = BBrobot(BBtask)
     Hits = [];
     DHits = [];
     PV = [];
+    H = [];
     
     ActionsTaken = nan*zeros(nA,1,nS); %rows actions - columns time - 3rd state :value=parameter value
 
@@ -71,5 +72,5 @@ function BBR = BBrobot(BBtask)
         'mtar', mtar, 'metaparam', metaparam, ...
         'STARS', STARS, 'MTARS', MTARS, 'METAPARAMS', METAPARAMS, 'SIGMAS', SIGMAS, 'BETAS', BETAS,...
         'METAPARAMS2', METAPARAMS2, 'SIGMAS2', SIGMAS2, 'STARS2', STARS2, 'MTARS2', MTARS2, ... 
-        'time_sa', time_sa, 'timestep', timestep, 'ActionsTaken', ActionsTaken, 'Hits', Hits, 'DHits',DHits, 'PV', PV);
+        'time_sa', time_sa, 'timestep', timestep, 'ActionsTaken', ActionsTaken, 'Hits', Hits, 'DHits',DHits, 'PV', PV, 'H', H);
 end

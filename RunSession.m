@@ -56,5 +56,6 @@ Sess.Hits = BBR.Hits;                                           %Hits: (1xT)
 Sess.DHits = BBR.DHits;                                         %DHits: (1xT)
 Sess.ExpectedActionParams = ExpectedActionParams;               %ExpParamVal: (nAxTxnS);
 Sess.Qvalues = Qvalues;                                         %Qvalues: (nAxTxnS);
+Sess.H = BBR.H;
 end
 

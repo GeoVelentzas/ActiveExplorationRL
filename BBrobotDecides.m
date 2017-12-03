@@ -40,8 +40,8 @@ function [BBR, a, probaA, probaPISA] = BBrobotDecides(BBT, BBR, s)
             %                     BBR.SIGMAS2(s, i) = min(BBR.SIGMAS2(s, i), 40);
             
         else
-            %BBR.SIGMAS2(s, i) = max(BBR.SIGMAS2(s,i)+0.1, 0.1);
-            %BBR.SIGMAS2(s, i) = min(BBR.SIGMAS2(s, i), 40);
+            BBR.SIGMAS2(s, i) = 0.9*BBR.SIGMAS2(s, i) + 0.1*40;
+%             BBR.SIGMAS2(s, i) = min(BBR.SIGMAS2(s, i), 40);
         end
     end
     %bar3(BBR.SIGMAS2);
@@ -74,11 +74,13 @@ function [BBR, a, probaA, probaPISA] = BBrobotDecides(BBT, BBR, s)
     % increment number the number of times (s,a) has been selected
     BBR.ActionsTaken(a.action, BBR.timestep, s) = a.param;
     p = (exp((- (a.param - BBT.engMu(s)) ^ 2) / (2 * BBT.engSig ^ 2)) - 0.5) * 2;
+    BBR.H = [BBR.H nan*ones(BBR.nS,1)];
 
     if (a.action == BBT.optimal(s))%&&(a.action==BBT.optimal(BBT.nS)))
         BBR.Hits = [BBR.Hits 1];
         BBR.PV(s,BBR.timestep) = p;
-        if (p > 0)
+        BBR.H(s,end) = p;
+        if (p >= 0)
             BBR.DHits = [BBR.DHits 1];
         else
             BBR.DHits = [BBR.DHits 0];

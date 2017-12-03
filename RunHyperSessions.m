@@ -9,8 +9,12 @@ Hsess.StatesVisited = [];       %[nhyperxT]
 Hsess.Metaparams = [];          %[(nAxnhyper)xTxnS]
 Hsess.Hits = [];                %[nhyperxT]
 Hsess.DHits = [];               %[nhyperxT]
+Hsess.ExpectedActionParams = [];%[(nAxnhyper)xTxnS]
+Hsess.Qvalues = [];             %[(nAxnhyper)xTxnS]
 Hsess.nHyper = nhyper;          %number of hypersessions
 Hsess.Task = task;              %type of task (e.g 'non-stationary1')
+Hsess.H = [];
+
 
 for i = 1:nhyper
     disp(['running session: ', num2str(i)]);
@@ -24,4 +28,16 @@ for i = 1:nhyper
     Hsess.Metaparams = [Hsess.Metaparams; Sess.Metaparams];
     Hsess.Hits = [Hsess.Hits; Sess.Hits];
     Hsess.DHits = [Hsess.DHits; Sess.DHits];
+    Hsess.ExpectedActionParams = [Hsess.ExpectedActionParams; Sess.ExpectedActionParams];
+    Hsess.Qvalues = [Hsess.Qvalues; Sess.Qvalues];
+    Hsess.H = [Hsess.H; Sess.H];
 end
+
+
+
+
+
+
+
+
+
