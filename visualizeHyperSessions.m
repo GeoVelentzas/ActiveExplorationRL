@@ -66,5 +66,32 @@ for state=1:5
     xlim([0 T]); ylim([-100 100]);
 end
 
+%% engagement
+figure(2);
+q1 = quantile(Hsess.Engagement, 0.25);
+q2 = quantile(Hsess.Engagement, 0.5);
+q3 = quantile(Hsess.Engagement, 0.75);
+subplot(3,1,1);
+plot(q2, 'k'); hold on; box on;
+t = 1:T;
+x = [t fliplr(t)];
+y = [q1 fliplr(q3)];
+fill(x, y, 'k', 'EdgeColor', 'None'); alpha(0.5);
+xlim([0 T]);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 end
 
