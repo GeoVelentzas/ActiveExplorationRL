@@ -93,10 +93,67 @@ switch(type)
          BBT.engMu(3) = 10;
     
      end
-     
      BBT.engMu(2) = 80*sin(2*pi/10000*t);
+     
+     
+    case 'stochastic-stationary'
+        c = 1; q = 0.2;
+        A1 = [q c q q q q;
+              q q c q q q;
+              q q q c q q;
+              q q q q c q;
+              q q q q q c];
+         if t == 1
+             BBT.P = zeros(5,6,5);
+             for s=1:5
+                 BBT.P(s, :, mod(s,5)+1) = A1(s,:);
+                 BBT.P(s, :, s) = 1-A1(s,:);
+             end
+         end
+
 
 
 end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
