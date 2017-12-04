@@ -97,7 +97,7 @@ switch(type)
      
      
     case 'stochastic-stationary'
-        c = 1; q = 0.2;
+        c = 0.9; q = 0.1;
         A1 = [q c q q q q;
               q q c q q q;
               q q q c q q;
@@ -111,6 +111,44 @@ switch(type)
              end
          end
 
+    case 'stochastic-non-stationary0'
+        c = 0.9; q = 0.1;
+        A1 = [q c q q q q;
+              q q c q q q;
+              q q q c q q;
+              q q q q c q;
+              q q q q q c];
+         if t == 1
+             BBT.P = zeros(5,6,5);
+             for s=1:5
+                 BBT.P(s, :, mod(s,5)+1) = A1(s,:);
+                 BBT.P(s, :, s) = 1-A1(s,:);
+             end
+         end
+         
+         if t == 5001
+             A2 = [c q q q q q;
+                   q q q c q q;
+                   q q c q q q;
+                   q c q q q q;
+                   q q q q c q];
+             BBT.P = zeros(5,6,5);
+             for s=1:5
+                 BBT.P(s, :, mod(s,5)+1) = A2(s,:);
+                 BBT.P(s, :, s) = 1-A2(s,:);
+             end
+             BBT.optimal(1) = 1;
+             BBT.optimal(2) = 4;
+             BBT.optimal(3) = 3;
+             BBT.optimal(4) = 2;
+             BBT.optimal(5) = 5;
+             BBT.engMu(1) = 0;
+             BBT.engMu(2) = -20;
+             BBT.engMu(3) = 10;
+             BBT.engMu(4) = 10;
+             BBT.engMu(5) = 0;
+         end
+             
 
 
 end
