@@ -8,14 +8,15 @@ function [BBR, a, probaA, probaPISA] = BBrobotDecides(BBT, BBR, s)
     probaA = BBR.PA(BBT.optimal(s));
     a.param = BBR.ACT(a.action); 
     BBR.sigma = 40 / (1 + 39 * exp(BBR.gainSigma * BBR.metaparam));
-
+    
     for i = 1:BBT.nA
+        smin = 3;  %minimum std
+        smax = 40; %maximum std
         if i == a .action
-            BBR.SIGMAS2(s, i) = 40./(1+39*exp(BBR.gainSigma*BBR.METAPARAMS2(s, i))); %increase this.. 20 is not enough
-            BBR.SIGMAS2(s, i) = max(BBR.SIGMAS2(s, i), 4); %default 0.1
-            BBR.SIGMAS2(s, i) = min(BBR.SIGMAS2(s, i), 40);
+            BBR.SIGMAS2(s, i) = (smax-smin)./(1+(smax-1-smin)*exp(BBR.gainSigma*BBR.METAPARAMS2(s, i)))+smin; %increase this.. 20 is not enough
+            BBR.SIGMAS2(s, i) = min(BBR.SIGMAS2(s, i), smax);
         else
-            BBR.SIGMAS2(s, i) = 0.9*BBR.SIGMAS2(s, i) + 0.1*40;
+            BBR.SIGMAS2(s, i) = 0.9*BBR.SIGMAS2(s, i) + 0.1*smax;
         end
     end
             
