@@ -4,9 +4,9 @@ function [ Sess ] = RunSession( task )
 episodeLength = 10000;                                          %length of one hyper-session
 BBT = BBsetTask();                                              %initialize task
 BBR = BBrobot(BBT);                                             %initialize robot
-BBR = BBinitModelParam( BBR );                                  %initialize parameters (Mehdi's optim)
-BBR.tau1 = 10;                                                  %hardcoded... needs to be optimized
-BBR.tau2 = 5;                                                   %hardcoded... needs to be optimized
+% BBR = BBinitModelParam( BBR );                                %initialize parameters (Mehdi's optim)
+aC=0.5; aA=0.2; gamma=0.7; mu=0.2; tau1=10; tau2=5; gainSigma=20; %default gamma=0.95;
+BBR = setModelParams(BBR, aC, aA, gamma, mu, tau1, tau2, gainSigma);
 
 %% Initialize variables
 s = drand01(BBT.P0);                                            %initial state is s
