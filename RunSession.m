@@ -5,8 +5,7 @@ episodeLength = 10000;                                          %length of one h
 BBT = BBsetTask();                                              %initialize task
 BBR = BBrobot(BBT);                                             %initialize robot
 % BBR = BBinitModelParam( BBR );                                %initialize parameters (Mehdi's optim)
-aC=0.5; aA=0.2; gamma=0.7; mu=0.1; tau1=10; tau2=5; gainSigma=20; %default ac=0.5; aA=0.2; gamma=0.95; mu=0.2;
-BBR = setModelParams(BBR, aC, aA, gamma, mu, tau1, tau2, gainSigma);
+BBR = BBsetParams( BBR, task );                                 %new optimized parameters
 
 %% Initialize variables
 s = drand01(BBT.P0);                                            %initial state is s
