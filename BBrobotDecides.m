@@ -12,11 +12,10 @@ function [BBR, a, probaA, probaPISA] = BBrobotDecides(BBT, BBR, s)
     for i = 1:BBT.nA
         smin = 3;  %minimum std
         smax = 40; %maximum std
-        if i == a .action
-            BBR.SIGMAS2(s, i) = (smax-smin)./(1+(smax-1-smin)*exp(BBR.gainSigma*BBR.METAPARAMS2(s, i)))+smin; %increase this.. 20 is not enough
-            BBR.SIGMAS2(s, i) = min(BBR.SIGMAS2(s, i), smax);
-        else
-            BBR.SIGMAS2(s, i) = 0.9*BBR.SIGMAS2(s, i) + 0.1*smax;
+        if i == a.action
+            BBR.SIGMAS2(s, i) = (smax-smin)./(1+(smax-1-smin)*exp(BBR.gainSigma*(BBR.METAPARAMS2(s, i)-0.1)))+smin; %increase this.. 20 is not enough
+         else
+            %BBR.SIGMAS2(s, i) = 0.9*BBR.SIGMAS2(s, i) + 0.1*smax;
         end
     end
             
