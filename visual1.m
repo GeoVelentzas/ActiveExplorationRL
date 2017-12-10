@@ -7,8 +7,6 @@ b = [0.0    0.0   0.0;
      0.3    0.0   0.3;
      0.6    0.6   0.6];
       
-close all;
-
 %% first figure  - actions + total engagement%%
 figure(1);
 x = 1:size(OptimalActions,2);
