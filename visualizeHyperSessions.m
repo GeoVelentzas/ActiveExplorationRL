@@ -8,11 +8,9 @@ b = [0.0    0.0   0.0;              %color of action 1
      0.0    0.0   0.2;              %color of action 4
      0.3    0.0   0.3;              %color of action 5
      0.6    0.6   0.6];             %color of action 6
-b = colormap(lines(8));
+%b = colormap(lines(8));
 T =  size(Hsess.Engagement,2);      %size of timesteps
 nexp = Hsess.nHyper;                %numbers of experiments
-
-%% helper variables
 for action = 1:6
     n{action} = action:6:nexp*6;                                                %indexes for each action 
     Actions{action} = Hsess.ActionsTaken(n{action}, :, :);                      %Actions{a}: (nAxnexp)xTxnS 
@@ -27,7 +25,7 @@ for state = 1:5
     Betas{state} = Hsess.Betas(m{state}, :);                                    %Betas{s}: nexpxT
     H{state} = Hsess.H(m{state}, :);
 end
-drawnow;
+
 %% actions taken - optimal actions - means of thetas + 3sigmas
 figure(1); suptitle('actions - optimal actions');
 for state = 1:5
@@ -118,39 +116,78 @@ for state=1:5
 end
 drawnow;
 %% metaparams - q-values
-figure(4); suptitle('metaparams-qvalues');
-for state=1:5
-    subplot(5,2,state*2-1);
-    for action=1:6
-        q1 = quantile(Metaparams{action}(:,:,state), 0.25);
-        q2 = quantile(Metaparams{action}(:,:,state), 0.5);
-        q3 = quantile(Metaparams{action}(:,:,state), 0.75);
-        plot(q2, '-', 'Color', b(action,:), 'LineWidth', 1); hold on; box on;
-        t = 1:T; x = [t fliplr(t)]; y = [q1 fliplr(q3)];
-        fill(x,y,b(action,:), 'EdgeColor', b(action,:)); alpha(0.4);
-        xlim([0 T]);
-    end
-    subplot(5,2,state*2);
-    for action=1:6
-        q1 = quantile(Qvalues{action}(:,:,state), 0.25);
-        q2 = quantile(Qvalues{action}(:,:,state), 0.5);
-        q3 = quantile(Qvalues{action}(:,:,state), 0.75);
-        plot(q2, '-', 'Color', b(action,:), 'LineWidth', 1); hold on; box on;
-        t = 1:T; x = [t fliplr(t)]; y = [q1 fliplr(q3)];
-        fill(x,y,b(action,:), 'EdgeColor', b(action,:)); alpha(0.4);
-        xlim([0 T]);
-    end
-end
+% figure(4); suptitle('metaparams-qvalues');
+% for state=1:5
+%     subplot(5,2,state*2-1);
+%     for action=1:6
+%         q1 = quantile(Metaparams{action}(:,:,state), 0.25);
+%         q2 = quantile(Metaparams{action}(:,:,state), 0.5);
+%         q3 = quantile(Metaparams{action}(:,:,state), 0.75);
+%         plot(q2, '-', 'Color', b(action,:), 'LineWidth', 1); hold on; box on;
+%         t = 1:T; x = [t fliplr(t)]; y = [q1 fliplr(q3)];
+%         fill(x,y,b(action,:), 'EdgeColor', b(action,:)); alpha(0.4);
+%         xlim([0 T]);
+%     end
+%     subplot(5,2,state*2);
+%     for action=1:6
+%         q1 = quantile(Qvalues{action}(:,:,state), 0.25);
+%         q2 = quantile(Qvalues{action}(:,:,state), 0.5);
+%         q3 = quantile(Qvalues{action}(:,:,state), 0.75);
+%         plot(q2, '-', 'Color', b(action,:), 'LineWidth', 1); hold on; box on;
+%         t = 1:T; x = [t fliplr(t)]; y = [q1 fliplr(q3)];
+%         fill(x,y,b(action,:), 'EdgeColor', b(action,:)); alpha(0.4);
+%         xlim([0 T]);
+%     end
+% end
 %%
 % figure(5);
 % for state=1:5
-%     subplot(5,2,state*2);
-%     plot(nanmean(H{state}, 1), 'k-', 'LineWidth', 2); hold on; box on;
+%     subplot(3,2,state);
+%     plot(H{state}', '.', 'MarkerSize', 1); hold on; box on;
 %     xlim([0 T]);
 % end
 
+%% cube: Sigmas - Actions - Beta (for one session)
 
+state = 4; experiment = 1; interval = 4990:5500;
+S = []; 
+A = [];
+B = Betas{state}(experiment,:);
+for action = 1:6
+    S = [S; Sigmas{action}(experiment,interval,state)];
+    A = [A; Actions{action}(experiment,interval,state)];
+end
+S = S(:,Hsess.StatesVisited(experiment,interval)==state);
+A = A(:,Hsess.StatesVisited(experiment,interval)==state);
+B = B(:,Hsess.StatesVisited(experiment,interval)==state);
+figure;
+h1 = axes;
 
+h = ribbon(S'); colormap(b); hold on; grid off; box on;
+set(h1, 'Ydir', 'reverse')
+shading interp
+
+len = size(S,2);
+ylim([0 len]); xlim([0 7]); zlim([0 40]);
+for action = 1:6
+plot([0.5+(action),0.5+(action)], [0 len], '--', 'Color', [0.7 0.7 0.7])
+plot3([7,7], [0 len], [0 0],'k')
+plot3([0 7], [0 0] , [0 0], 'k')
+    scatter(action*ones(1,length(find(~isnan(A(action,:))))), find(~isnan(A(action,:))), 15, b(action,:), 'o', 'filled');
+    plot([0.5+(action-1),0.5+(action-1)], [0 len], '--', 'Color', [0.7 0.7 0.7])
+end
+plot3([7 7], [0 len],[40 40], 'k') 
+plot3([7 7], [len len],[0 40], 'k') 
+plot3([7 7], [0 0],[0 40], 'k')
+plot3([0 7], [0 0],[40 40], 'k')
+plot3([0 0], [len len],[0 40], 'Color', [0.5 0.5 0.5])
+plot3([0 0], [0 len],[40 40], 'Color', [0.5 0.5 0.5])
+plot3([0 7], [len len],[40 40], 'Color', [0.5 0.5 0.5])
+
+mnB = min(B);
+mxB = max(B);
+plot3(7*ones(1, length(B)), 1:len, (B-mnB)/(mxB-mnB)*40, 'k-.', 'LineWidth', 2 );
+alpha(1.0)
 
 
 
