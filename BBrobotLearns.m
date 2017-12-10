@@ -18,24 +18,15 @@ function BBR = BBrobotLearns( BBR, s, a, y, r )
     BBR.metaparam = BBR.metaparam + BBR.mu * (BBR.star - BBR.mtar);
     
     
-    %NEW MODEL V3 HERE !!!!!!!!!!!!!!!!!!!!!!!
     BBR.STARS(s) = BBR.STARS(s) + (r - BBR.STARS(s))/BBR.tau1;
     BBR.MTARS(s) = BBR.MTARS(s) + (BBR.STARS(s) - BBR.MTARS(s))/ BBR.tau2;
     BBR.METAPARAMS(s) = BBR.METAPARAMS(s) + BBR.mu*(BBR.STARS(s) - BBR.MTARS(s));
     
+    %NEW MODEL HERE!!!!!!!!!!!!!!!!!!!!!!!
     BBR.STARS2(s,a.action) = BBR.STARS2(s,a.action) + (r-BBR.STARS2(s,a.action))/BBR.tau1;
     BBR.MTARS2(s,a.action) = BBR.MTARS2(s,a.action) + (BBR.STARS2(s, a.action)-BBR.MTARS2(s,a.action))/BBR.tau2;
     BBR.METAPARAMS2(s, a.action) = BBR.METAPARAMS2(s, a.action) + BBR.mu*(BBR.STARS2(s,a.action) - BBR.MTARS2(s,a.action));
-    
-    %try unbiased method
-%     lr1 = (BBR.tau1-1)/BBR.tau1;
-%     lr2 = (BBR.tau2-1)/BBR.tau2;
-%     lr3 = (1-BBR.mu);
-%     BBR.STARS2(s,a.action) = (1-lr1^BBR.time_sa(s,a.action))*(BBR.STARS2(s,a.action) + (r-BBR.STARS2(s,a.action))/BBR.tau1);
-%     BBR.MTARS2(s,a.action) = (1-lr2^BBR.time_sa(s,a.action))*(BBR.MTARS2(s,a.action) + (BBR.STARS2(s, a.action)-BBR.MTARS2(s,a.action))/BBR.tau2);
-%     BBR.METAPARAMS2(s, a.action) = (1-lr3^BBR.time_sa(s,a.action))*(BBR.METAPARAMS2(s, a.action) + BBR.mu*(BBR.STARS2(s,a.action) - BBR.MTARS2(s,a.action)));
-    
-    
+        
     
         
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -61,7 +52,7 @@ function BBR = BBrobotLearns( BBR, s, a, y, r )
     BBR.wC(s) = BBR.wC(s) + BBR.alphaC * BBR.delta;
     
     %% UPDATING THE ACTOR
-    % updating only for action performed a.action
+    % updating only for action performed a.action or always (default)
     %if BBR.delta>0    
       BBR.wA(s, a.action) = BBR.wA(s, a.action) + BBR.alphaA * BBR.delta * (a.param - BBR.ACT(a.action));
     %end
