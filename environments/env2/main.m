@@ -4,14 +4,12 @@ load('T');
 
 % create the environment with a Given Transition Matrix
 env = environment(T);
-
+robot = agent(size(T,1), size(T,2), 100);
 % History of transitions (s,a,r,sp);
 H = [];
 for i = 1:100
-    actions = randperm(6);
     s = env.s;
-    a = actions(1);
-    p = randn;
+    [a,p] = robot.decide();
     env = env.step(a);
     r = env.r;
     sp = env.s;
