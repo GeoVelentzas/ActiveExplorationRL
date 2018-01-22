@@ -12,13 +12,12 @@ classdef environment
             obj.T = T;
         end
         
-        function obj = step(obj, action, params)
-            if action~=7
-                obj.s = obj.T(obj.s, action);
-                obj.r = randn;
-                if obj.s>=97
-                    obj.r = 10;
-                end
+        function obj = step(obj, action, p1, p2) %two params per action...
+            % action 7 is "wait" param is waiting time...
+            obj.s = obj.T(obj.s, action);
+            obj.r = randn;
+            if obj.s>=97
+                obj.r = 10;
             end
         end
             
