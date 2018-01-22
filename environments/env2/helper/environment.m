@@ -15,7 +15,10 @@ classdef environment
         function obj = step(obj, action, params)
             if action~=7
                 obj.s = obj.T(obj.s, action);
-                obj.r = action;
+                obj.r = randn;
+                if obj.s>=97
+                    obj.r = 10;
+                end
             end
         end
             

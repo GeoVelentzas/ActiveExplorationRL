@@ -16,7 +16,7 @@ classdef agent
             
         end
         
-        function [a,p] = decide(obj)
+        function [a,p] = decide(obj, state)
             a = randperm(obj.nA);
             a = a(1);
             p = randn * obj.scale;
