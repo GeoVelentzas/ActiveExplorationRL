@@ -2,17 +2,15 @@ classdef agent
     properties
         Q; betas; sigmas; rbar; rbbar; nS; nA; interval; gainSigma; gamma;
         metaparams; stars; mtars; alphaC; alphaA; alphaQ; mu; tau1; tau2;
-        wC; wA; VC; PA; ACT; stars2; mtars2; metaparams2;
+        delta; wC; wA; VC; PA; ACT;
     end
     
     methods
         function obj = agent(nS, nA, param_scale)
             % agent initialization...
             disp('agent initializing ...');
-            obj.mtars = 0*ones(1,nS);
-            obj.stars = -2.0*ones(1,nS);
-            obj.mtars2 = 0*ones(nS,nA);
-            obj.stars2 = -2.0*ones(nS,nA);
+            obj.mtars = 0*ones(nS,nA);
+            obj.stars = 0*ones(nS,nA);
             obj.rbar = 0 * ones(nS, nA);
             obj.rbbar = 0 * ones(nS, nA);
             obj.betas = 0 * ones(1,nS);
@@ -21,8 +19,7 @@ classdef agent
             obj.nA = nA;
             obj.nS = nS;
             obj.interval = -param_scale:0.01:param_scale;
-            obj.metaparams = 0 *ones(1,nS);
-            obj.metaparams2 = 0 *ones(nS,nA);
+            obj.metaparams = 0 *ones(nS,nA);
             obj.alphaC = 0.1;
             obj.alphaA = 0.5;
             obj.alphaQ = 0.4;
@@ -31,6 +28,7 @@ classdef agent
             obj.tau1 = 10;
             obj.tau2 = 5;
             obj.gainSigma = 20;
+            obj.delta = 0; %reward prediction error
             obj.wC = zeros(nS, 1); %critic weights
             obj.wA = zeros(nS, nA); %actor weights
             obj.VC = 0; %critic value at time t in state s
@@ -50,7 +48,7 @@ classdef agent
                 smin = 3;  %minimum std
                 smax = 40; %maximum std
                 if i == a
-                    obj.sigmas(s, i) = (smax-smin)./(1+(smax-1-smin)*exp(obj.gainSigma*(obj.metaparams2(s, i)-0.1)))+smin;
+                    obj.sigmas(s, i) = (smax-smin)./(1+(smax-1-smin)*exp(obj.gainSigma*(obj.metaparams(s, i)-0.1)))+smin;
                 end
             end
             pisa = exp(- (obj.interval - p) .^ 2 ./ (2 * obj.sigmas(s, a) ^ 2)) ./ (sqrt(2 * pi)* obj.sigmas(s, a));
@@ -59,25 +57,18 @@ classdef agent
         end
         
         function obj = learn(obj, s, a, p, r, sp)
-            obj.stars(s) = obj.stars(s) + (r-obj.stars(s))/obj.tau1;
-            obj.mtars(s) = obj.mtars(s) + (obj.stars(s) - obj.mtars(s))/obj.tau2;
-            obj.metaparams(s) = obj.metaparams(s) + obj.mu*(obj.stars(s)-obj.mtars(s));
-            
-            obj.stars2(s,a) = obj.stars2(s,a) + (r-obj.stars2(s,a))/obj.tau1;
-            obj.mtars2(s,a) = obj.mtars2(s,a) + (obj.stars2(s,a) - obj.mtars2(s,a))/obj.tau2;
-            obj.metaparams2(s,a) = obj.metaparams2(s,a) + obj.mu*(obj.stars2(s,a)-obj.mtars2(s,a));
+            obj.stars(s,a) = obj.stars(s,a) + (r-obj.stars(s,a))/obj.tau1;
+            obj.mtars(s,a) = obj.mtars(s,a) + (obj.stars(s,a) - obj.mtars(s,a))/obj.tau2;
+            obj.metaparams(s,a) = obs.metaparams(s,a) + obj.mu*(obj.stars(s,a)-obj.stars(s,a));
 
-            newQvalues = obj.Q(sp,:);
-            deltaQ = r + obj.gamma*max(newQvalues) - obj.Q(s,a);
-            obj.Q(s,a) = obj.Q(s,a) + obj.alphaQ*deltaQ;
+            newQvalues 
 
-            value = obj.wC(sp);
-            deltaV = r + obj.gamma*value - obj.VC;
-            obj.wC(s) = obj.wC(s) + obj.alphaC*deltaV;
-            
-            % maybe try this only if deltaV>0
-            obj.wA(s,a) = obj.wA(s,a) + obj.alphaA*deltaV*(p-obj.ACT(a));
-            
+    % computing Q-values in the new state y
+    newQvalues = BBR.Q(y, :);
+    % computing reward prediction error
+    BBR.RPEQ(a.action) = r + BBR.gamma * max(newQvalues) - BBR.Q(s, a.action);
+    % updating wQ weights through Q-learning
+    BBR.Q(s, a.action) = BBR.Q(s, a.action) + BBR.alphaQ * BBR.RPEQ(a.action);
         end
         
     end
