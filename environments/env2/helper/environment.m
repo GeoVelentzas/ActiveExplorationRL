@@ -10,17 +10,19 @@ classdef environment
             obj.s = 1;
             obj.sp = 1;
             obj.T = T;
+            obj.O = O;
         end
         
         function [obj,r] = step(obj, action, p) %two params per action...
-            if (obj.s==1)&&(action==1)
-                r = 10;
-            elseif (obj.s==41)&&(action==4)
-                r = 10;
+            if obj.O(obj.s,action)
+                r = 1;
             else
-                r = 0;
+                r = -10;
             end
             obj.s = obj.T(obj.s, action);
+            if obj.s == 118
+                r = 10;
+            end
         end
             
     end
