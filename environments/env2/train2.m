@@ -9,7 +9,7 @@ robot = agent(size(T,1), size(T,2), 100);
 % History of transitions (s,a,r,sp);
 H = [];
 curriculum = inf;
-repeat = 40;
+repeat = 100;
 counter = 0;
 counter1 = 0;
 %episodes = 12000; %curriculum*repeat*120;
