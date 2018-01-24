@@ -6,8 +6,8 @@ classdef world
     methods
         function obj = world(state)
             obj.time = 0;
-            Smap = load('states_visual');
-            Smap = Smap.states_visual;
+            Smap = load('Smap');
+            Smap = Smap.Smap;
             
             %child's characteristics
             obj.child.head_angle = -pi/4; %!!! not changed?
@@ -60,35 +60,35 @@ classdef world
             
             
             p1 = find(Smap(state,:)=='1');
-            if p1<3
+            if p1<=3
                 obj.cube1.pos=obj.map.pos1;
-            elseif p1<7
+            elseif p1<=7
                 obj.cube1.pos=obj.map.pos2;
-            elseif p1<11
+            elseif p1<=13
                 obj.cube1.pos=obj.map.pos3;
-            else
+            elseif p1<=18
                 obj.cube1.pos=obj.map.pos4;
             end
             
             p2 = find(Smap(state,:)=='2');
-            if p2<3
+            if p2<=3
                 obj.cube2.pos=obj.map.pos1;
-            elseif p2<7
+            elseif p2<=8
                 obj.cube2.pos=obj.map.pos2;
-            elseif p2<11
+            elseif p2<=13
                 obj.cube2.pos=obj.map.pos3;
-            else
+            elseif p2<=18
                 obj.cube2.pos=obj.map.pos4;
             end
             
             p3 = find(Smap(state,:)=='3');
-            if p3<3
+            if p3<=3
                 obj.cube3.pos=obj.map.pos1;
-            elseif p3<7
+            elseif p3<=8
                 obj.cube3.pos=obj.map.pos2;
-            elseif p3<11
+            elseif p3<=13
                 obj.cube3.pos=obj.map.pos3;
-            else
+            elseif p3<=18
                 obj.cube3.pos=obj.map.pos4;
             end
             
