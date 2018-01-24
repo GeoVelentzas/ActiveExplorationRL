@@ -32,3 +32,7 @@ for s_init = states
     waitbar(s_init/length(states));
 end
 close(h);
+
+bar(mean(S,2)); xlim([0 120]); title('Average Cummulative Rewards from starting states');
+
+
