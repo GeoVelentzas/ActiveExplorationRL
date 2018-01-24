@@ -41,38 +41,66 @@ patch(radius*x+pos(1), radius*y+pos(2), color);
 
 
 %% draw cubes
-cube1 = obj.cube1;
-cube2 = obj.cube2;
-cube3 = obj.cube3;
-%cube4 = obj.cube4;
+for i=obj.map.layer1
+    if i==1
+        drawcube(obj.cube1);
+    elseif i==2
+        drawcube(obj.cube2);
+    elseif i==3
+        drawcube(obj.cube3);
+    end
+end
 
-r = cube1.size;
-p = cube1.pos;
-color = cube1.color;
-c(1,:) = p + [-r -r];
-c(2,:) = p + [-r +r];
-c(3,:) = p + [+r +r];
-c(4,:) = p + [+r -r];
-patch(c(:,1)', c(:,2)', color); 
+for i = obj.map.layer2
+    if i==1
+        drawcube(obj.cube1);
+    elseif i==2
+        drawcube(obj.cube2);
+    elseif i==3
+        drawcube(obj.cube3);
+    end
+end
 
-r = cube2.size;
-p = cube2.pos;
-color = cube2.color;
-c(1,:) = p + [-r -r];
-c(2,:) = p + [-r +r];
-c(3,:) = p + [+r +r];
-c(4,:) = p + [+r -r];
-patch(c(:,1)', c(:,2)', color); 
-
-r = cube3.size;
-p = cube3.pos;
-color = cube3.color;
-c(1,:) = p + [-r -r];
-c(2,:) = p + [-r +r];
-c(3,:) = p + [+r +r];
-c(4,:) = p + [+r -r];
-patch(c(:,1)', c(:,2)', color); 
-
+for i = obj.map.layer3
+    if i==1
+        drawcube(obj.cube1);
+    elseif i==2
+        drawcube(obj.cube2);
+    elseif i==3
+        drawcube(obj.cube3);
+    end
+end
+% cube1 = obj.cube1;
+% cube2 = obj.cube2;
+% cube3 = obj.cube3;
+% 
+% r = cube1.size;
+% p = cube1.pos;
+% color = cube1.color;
+% c(1,:) = p + [-r -r];
+% c(2,:) = p + [-r +r];
+% c(3,:) = p + [+r +r];
+% c(4,:) = p + [+r -r];
+% patch(c(:,1)', c(:,2)', color); 
+% 
+% r = cube2.size;
+% p = cube2.pos;
+% color = cube2.color;
+% c(1,:) = p + [-r -r];
+% c(2,:) = p + [-r +r];
+% c(3,:) = p + [+r +r];
+% c(4,:) = p + [+r -r];
+% patch(c(:,1)', c(:,2)', color); 
+% 
+% r = cube3.size;
+% p = cube3.pos;
+% color = cube3.color;
+% c(1,:) = p + [-r -r];
+% c(2,:) = p + [-r +r];
+% c(3,:) = p + [+r +r];
+% c(4,:) = p + [+r -r];
+% patch(c(:,1)', c(:,2)', color); 
+% 
 % r = cube4.size;
 % p = cube4.pos;
 % color = cube4.color;

@@ -51,47 +51,168 @@ classdef world
             obj.map.pos3 = [2.5 -1.2];
             obj.map.pos4 = [4.3 -2.3];
             
-            
             obj.robot.pos0 = [0 -1];
             obj.robot.pos1 = [2 -1];
             obj.robot.pos2 = [0.8 -1.5];
             obj.robot.pos3 = [-1.3 -1];
             obj.robot.pos4 = [-3 -1];
             
-            
-            p1 = find(Smap(state,:)=='1');
+            S = Smap(state,:);
+            obj.map.layer1 = [];
+            obj.map.layer2 = [];
+            obj.map.layer3 = [];
+            p1 = find(S=='1');
             if p1<=3
                 obj.cube1.pos=obj.map.pos1;
-            elseif p1<=7
-                obj.cube1.pos=obj.map.pos2;
+                if p1==3
+                    obj.cube1.accessible = true;
+                    obj.map.layer3 = [obj.map.layer3 1];
+                elseif p1==2
+                    obj.cube1.accessible = false;
+                    obj.map.layer2 = [obj.map.layer2 1];
+                elseif p1==1
+                    obj.cube1.accessible = false;
+                    obj.map.layer1 = [obj.map.layer1 1];
+                end
+            elseif p1<=8
+                obj.cube1.pos = obj.map.pos2;
+                if p1==8
+                    obj.cube1.accessible = true;
+                    obj.map.layer3 = [obj.map.layer3 1];
+                elseif p1==7
+                    obj.cube1.accessible = false;
+                    obj.map.layer2 = [obj.map.layer2 1];
+                elseif p1==6
+                    obj.cube1.accessible = false;
+                    obj.map.layer1 = [obj.map.layer1 1];
+                end
             elseif p1<=13
                 obj.cube1.pos=obj.map.pos3;
+                if p1==13
+                    obj.cube1.accessible = true;
+                    obj.map.layer3 = [obj.map.layer3 1];
+                elseif p1==12
+                    obj.cube1.accessible = false;
+                    obj.map.layer2 = [obj.map.layer2 1];
+                elseif p1==11
+                    obj.cube1.accessible = false;
+                    obj.map.layer1 = [obj.map.layer1 1];
+                end
             elseif p1<=18
                 obj.cube1.pos=obj.map.pos4;
+                if p1==13
+                    obj.cube1.accessible = true;
+                    obj.map.layer3 = [obj.map.layer3 1];
+                elseif p1==12
+                    obj.cube1.accessible = false;
+                    obj.map.layer2 = [obj.map.layer2 1];
+                elseif p1==11
+                    obj.cube1.accessible = false;
+                    obj.map.layer1 = [obj.map.layer1 1];
+                end
             end
             
-            p2 = find(Smap(state,:)=='2');
+            p2 = find(S=='2');
             if p2<=3
                 obj.cube2.pos=obj.map.pos1;
+                if p2==3
+                    obj.cube2.accessible = true;
+                    obj.map.layer3 = [obj.map.layer3 2];
+                elseif p2==2
+                    obj.cube2.accessible = false;
+                    obj.map.layer2 = [obj.map.layer2 2];
+                elseif p2==1
+                    obj.cube2.accessible = false;
+                    obj.map.layer1 = [obj.map.layer1 2];
+                end
             elseif p2<=8
                 obj.cube2.pos=obj.map.pos2;
+                if p2==8
+                    obj.cube2.accessible = true;
+                    obj.map.layer3 = [obj.map.layer3 2];
+                elseif p2==7
+                    obj.cube2.accessible = false;
+                    obj.map.layer2 = [obj.map.layer2 2];
+                elseif p2==6
+                    obj.cube2.accessible = false;
+                    obj.map.layer1 = [obj.map.layer1 2];
+                end
             elseif p2<=13
                 obj.cube2.pos=obj.map.pos3;
+                if p2==13
+                    obj.cube2.accessible = true;
+                    obj.map.layer3 = [obj.map.layer3 2];
+                elseif p2==12
+                    obj.cube2.accessible = false;
+                    obj.map.layer2 = [obj.map.layer2 2];
+                elseif p2==11
+                    obj.cube2.accessible = false;
+                    obj.map.layer1 = [obj.map.layer1 2];
+                end
             elseif p2<=18
                 obj.cube2.pos=obj.map.pos4;
+                if p2==18
+                    obj.cube2.accessible = true;
+                    obj.map.layer3 = [obj.map.layer3 2];
+                elseif p2==17
+                    obj.cube2.accessible = false;
+                    obj.map.layer2 = [obj.map.layer2 2];
+                elseif p2==16
+                    obj.cube2.accessible = false;
+                    obj.map.layer1 = [obj.map.layer1 2];
+                end
             end
             
-            p3 = find(Smap(state,:)=='3');
+            p3 = find(S=='3');
             if p3<=3
                 obj.cube3.pos=obj.map.pos1;
+                if p3==3
+                    obj.cube3.accessible = true;
+                    obj.map.layer3 = [obj.map.layer3 3];
+                elseif p3==2
+                    obj.cube3.accessible = false;
+                    obj.map.layer2 = [obj.map.layer2 3];
+                elseif p3==1
+                    obj.cube3.accessible = false;
+                    obj.map.layer1 = [obj.map.layer1 3];
+                end
             elseif p3<=8
                 obj.cube3.pos=obj.map.pos2;
+                if p3==8
+                    obj.cube3.accessible = true;
+                    obj.map.layer3 = [obj.map.layer3 3];
+                elseif p3==7
+                    obj.cube3.accessible = false;
+                    obj.map.layer2 = [obj.map.layer2 3];
+                elseif p3==6
+                    obj.cube3.accessible = false;
+                    obj.map.layer1 = [obj.map.layer1 3];
+                end
             elseif p3<=13
                 obj.cube3.pos=obj.map.pos3;
+                if p3==13
+                    obj.cube3.accessible = true;
+                    obj.map.layer3 = [obj.map.layer3 3];
+                elseif p3==12
+                    obj.cube3.accessible = false;
+                    obj.map.layer2 = [obj.map.layer2 3];
+                elseif p3==11
+                    obj.cube3.accessible = false;
+                    obj.map.layer1 = [obj.map.layer1 3];
+                end
             elseif p3<=18
                 obj.cube3.pos=obj.map.pos4;
+                if p3==18
+                    obj.cube3.accessible = true;
+                    obj.map.layer3 = [obj.map.layer3 3];
+                elseif p3==17
+                    obj.cube3.accessible = false;
+                    obj.map.layer2 = [obj.map.layer2 3];
+                elseif p3==16
+                    obj.cube3.accessible = false;
+                    obj.map.layer1 = [obj.map.layer1 3];
+                end
             end
-            
             
             
             %obj.cube1.pos = obj.map.pos1;

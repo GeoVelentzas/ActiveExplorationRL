@@ -1,11 +1,13 @@
 classdef world
     properties
-        child; robot; time; cube1; cube2; cube3; cube4; map;
+        child; robot; time; cube1; cube2; cube3; cube4; map; Smap;
     end
     
     methods
-        function obj = world(state, states_visual)
+        function obj = world(state)
             obj.time = 0;
+            Smap = load('Smap');
+            Smap = Smap.Smap;
             
             %child's characteristics
             obj.child.head_angle = -pi/4; %!!! not changed?
@@ -49,68 +51,149 @@ classdef world
             obj.map.pos3 = [2.5 -1.2];
             obj.map.pos4 = [4.3 -2.3];
             
-            
             obj.robot.pos0 = [0 -1];
             obj.robot.pos1 = [2 -1];
             obj.robot.pos2 = [0.8 -1.5];
             obj.robot.pos3 = [-1.3 -1];
             obj.robot.pos4 = [-3 -1];
             
+            l1 = [1 6 11 16];
+            l2 = [2 7 12 17];
+            l3 = [3 8 13 18];
+            S = Smap(state,:);
+            obj.map.layer1 = [];
+            obj.map.layer2 = [];
+            obj.map.layer3 = [];
             
-            p1 = find(states_visual(state,:)=='1');
-            if p1<3
+            p1 = find(S=='1');
+            p2 = find(S=='2');
+            p3 = find(S=='3');
+                                        
+            
+            if p1<=3
                 obj.cube1.pos=obj.map.pos1;
-            elseif p1<7
-                obj.cube1.pos=obj.map.pos2;
-            elseif p1<11
+                if p1==3
+                    obj.cube1.accessible = true;
+                    obj.map.layer3 = [obj.map.layer3 1];
+                elseif p1==2
+                    obj.cube1.accessible = false;
+                    obj.map.layer2 = [obj.map.layer2 1];
+                elseif p1==1
+                    obj.cube1.accessible = false;
+                    obj.map.layer1 = [obj.map.layer1 1];
+                end
+            elseif p1<=7
+                obj.cube1.pos = obj.map.pos2;
+                if p1==7
+                    obj.cube1.accessible = true;
+                    obj.map.layer3 = [obj.map.layer3 1];
+                elseif p1==6
+                    obj.cube1.accessible = false;
+                    obj.map.layer2 = [obj.map.layer2 1];
+                elseif p1==5
+                    obj.cube1.accessible = false;
+                    obj.map.layer1 = [obj.map.layer1 1];
+                end
+            elseif p1<=13
                 obj.cube1.pos=obj.map.pos3;
-            else
+                if p1==13
+                    obj.cube1.accessible = true;
+                    obj.map.layer3 = [obj.map.layer3 1];
+                elseif p1==12
+                    obj.cube1.accessible = false;
+                    obj.map.layer2 = [obj.map.layer2 1];
+                elseif p1==11
+                    obj.cube1.accessible = false;
+                    obj.map.layer1 = [obj.map.layer1 1];
+                end
+            elseif p1<=18
                 obj.cube1.pos=obj.map.pos4;
+                if p1==13
+                    obj.cube1.accessible = true;
+                    obj.map.layer3 = [obj.map.layer3 1];
+                elseif p1==12
+                    obj.cube1.accessible = false;
+                    obj.map.layer2 = [obj.map.layer2 1];
+                elseif p1==11
+                    obj.cube1.accessible = false;
+                    obj.map.layer1 = [obj.map.layer1 1];
+                end
             end
             
-            p2 = find(states_visual(state,:)=='2');
-            if p2<3
+            p2 = find(Smap(state,:)=='2');
+            if p2<=3
                 obj.cube2.pos=obj.map.pos1;
-            elseif p2<7
+                if p2==3
+                    obj.cube2.accessible = true;
+                    obj.map.layer3 = [obj.map.layer3 2];
+                elseif p2==2
+                    obj.cube2.accessible = false;
+                    obj.map.layer2 = [obj.map.layer2 2];
+                elseif p2==1
+                    obj.cube2.accessible = false;
+                    obj.map.layer1 = [obj.map.layer1 2];
+                end
+            elseif p2<=8
                 obj.cube2.pos=obj.map.pos2;
-            elseif p2<11
+                if p2==8
+                    obj.cube2.accessible = true;
+                    obj.map.layer3 = [obj.map.layer3 2];
+                elseif p2==7
+                    obj.cube2.accessible = false;
+                    obj.map.layer2 = [obj.map.layer2 2];
+                elseif p2==6
+                    obj.cube2.accessible = false;
+                    obj.map.layer1 = [obj.map.layer1 2];
+                end
+            elseif p2<=13
                 obj.cube2.pos=obj.map.pos3;
-            else
+                if p2==13
+                    obj.cube2.accessible = true;
+                    obj.map.layer3 = [obj.map.layer3 2];
+                elseif p2==12
+                    obj.cube2.accessible = false;
+                    obj.map.layer2 = [obj.map.layer2 2];
+                elseif p2==11
+                    obj.cube2.accessible = false;
+                    obj.map.layer1 = [obj.map.layer1 2];
+                end
+            elseif p2<=18
                 obj.cube2.pos=obj.map.pos4;
+                
             end
             
-            p3 = find(states_visual(state,:)=='3');
-            if p2<3
-                obj.cube2.pos=obj.map.pos1;
-            elseif p2<7
-                obj.cube2.pos=obj.map.pos2;
-            elseif p2<11
-                obj.cube2.pos=obj.map.pos3;
-            else
-                obj.cube2.pos=obj.map.pos4;
+            p3 = find(Smap(state,:)=='3');
+            if p3<=3
+                obj.cube3.pos=obj.map.pos1;
+            elseif p3<=8
+                obj.cube3.pos=obj.map.pos2;
+            elseif p3<=13
+                obj.cube3.pos=obj.map.pos3;
+            elseif p3<=18
+                obj.cube3.pos=obj.map.pos4;
             end
             
             
             
-            obj.cube1.pos = obj.map.pos1;
+            %obj.cube1.pos = obj.map.pos1;
             obj.cube1.color = [ 1 0.5 1 ];
             obj.cube1.size = 0.4;
             obj.cube1.grasped_right = 0;
             obj.cube1.grasped_left = 0;
             
-            obj.cube2.pos = obj.map.pos3;
+            %obj.cube2.pos = obj.map.pos3;
             obj.cube2.color = [1 0 0];
             obj.cube2.size = 0.5;
             obj.cube2.grasped_right = 0;
             obj.cube2.grasped_left = 0;
             
-            obj.cube3.pos = obj.map.pos4;
+            %obj.cube3.pos = obj.map.pos4;
             obj.cube3.color = [0.5 1 0.5];
             obj.cube3.size = 0.55;
             obj.cube3.grasped_right = 0;
             obj.cube3.grasped_left = 0;
             
-            obj.cube4.pos = obj.robot.pos4;
+            %obj.cube4.pos = obj.robot.pos4;
             obj.cube4.color = [1 0.5 1];
             obj.cube4.size = 0.4;
             obj.cube4.grasped_right = 0;
