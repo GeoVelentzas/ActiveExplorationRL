@@ -79,15 +79,15 @@ close(h)
 % subplot(2,2,3);
 % plot(H(:,4)); title('rewards returned'); box on;
 
-% figure(1);
-% subplot(3,1,1);
-% plot(H(:,4)); title('rewards returned'); box on; hold on;
-% scatter(R, zeros(1,length(R))); hold on;
-% scatter(C, zeros(1,length(C)),'*c');
-% subplot(3,1,2);
-% scatter(R, S); box on; hold on;
-% subplot(3,1,3);
-% scatter(1:size(H,1), H(:,1), '.'); box on; title('states visited');
+figure(1);
+subplot(3,1,1);
+plot(H(:,4)); title('rewards returned'); box on; hold on;
+scatter(R, zeros(1,length(R))); hold on;
+scatter(C, zeros(1,length(C)),'*c');
+subplot(3,1,2);
+scatter(R, S); box on; hold on;
+subplot(3,1,3);
+scatter(1:size(H,1), H(:,1), '.'); box on; title('states visited');
 disp('agent trained....')
 
 
