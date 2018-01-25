@@ -43,7 +43,7 @@ classdef environment
                 elseif (s1>=25)&&(s1<=96)&&(s2>=97)
                     %2-3
                     type = 5;
-                elseif (s1>=96)&&(s2>=25)&&(s2<=96)
+                elseif (s1>=97)&&(s2>=25)&&(s2<=96)
                     %3-2
                     type = 6;
                 end
