@@ -13,7 +13,7 @@ px4 = obj.map.pos4(1); py4 = obj.map.pos4(2); c4=[0.89 0.99 0.89]; r4=0.8;
 drawcircle(px1,py1,r1,c1,false);
 drawcircle(px3,py3,r3,c3,false);
 drawcircle(px4,py4,r4,c4,false);
-drawcircle(px2,py2,r2,c2,false)
+drawcircle(px2,py2,r2,c2,false);
 
 %% draw child
 person = obj.child;
@@ -33,11 +33,6 @@ patch([radius*cos(angle-w)+pos(1) radius*cos(angle+w)+pos(1) (radius+d)*cos(angl
       [radius*sin(angle-w)+pos(2) radius*sin(angle+w)+pos(2) (radius+d)*sin(angle)+pos(2)], color);
 %head
 patch(radius*x+pos(1), radius*y+pos(2), color);
-
-
-
-
-
 
 
 %% draw cubes
@@ -70,45 +65,6 @@ for i = obj.map.layer3
         drawcube(obj.cube3);
     end
 end
-% cube1 = obj.cube1;
-% cube2 = obj.cube2;
-% cube3 = obj.cube3;
-% 
-% r = cube1.size;
-% p = cube1.pos;
-% color = cube1.color;
-% c(1,:) = p + [-r -r];
-% c(2,:) = p + [-r +r];
-% c(3,:) = p + [+r +r];
-% c(4,:) = p + [+r -r];
-% patch(c(:,1)', c(:,2)', color); 
-% 
-% r = cube2.size;
-% p = cube2.pos;
-% color = cube2.color;
-% c(1,:) = p + [-r -r];
-% c(2,:) = p + [-r +r];
-% c(3,:) = p + [+r +r];
-% c(4,:) = p + [+r -r];
-% patch(c(:,1)', c(:,2)', color); 
-% 
-% r = cube3.size;
-% p = cube3.pos;
-% color = cube3.color;
-% c(1,:) = p + [-r -r];
-% c(2,:) = p + [-r +r];
-% c(3,:) = p + [+r +r];
-% c(4,:) = p + [+r -r];
-% patch(c(:,1)', c(:,2)', color); 
-% 
-% r = cube4.size;
-% p = cube4.pos;
-% color = cube4.color;
-% c(1,:) = p + [-r -r];
-% c(2,:) = p + [-r +r];
-% c(3,:) = p + [+r +r];
-% c(4,:) = p + [+r -r];
-% patch(c(:,1)', c(:,2)', color); 
 
 
 %% draw robot
