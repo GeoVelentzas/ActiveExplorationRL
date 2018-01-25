@@ -2,7 +2,7 @@ classdef environment
     properties
         %T: Transition Matrix
         %O: Optimal Actions-Params
-        T; O; P; s; sp; r; engSig; minEng; maxEng; cEng; reeng; forget; lambdaRwd;
+        T; O; P; s; sp; r; engSig; minEng; maxEng; cEng; reeng; forget; lambdaRwd; optimalP;
     end
     
     methods
@@ -19,6 +19,7 @@ classdef environment
             obj.forget = 0.05;
             obj.lambdaRwd = 0.7;
             obj.P = P;
+            obj.optimalP = 0;
         end
         
         function [obj,r] = step(obj, action, p) %two params per action...
@@ -47,6 +48,7 @@ classdef environment
                     type = 6;
                 end
                 H = (exp((- (p - obj.P(type)) ^ 2) / (2 * obj.engSig ^ 2)) - 0.5) * 2;
+                obj.optimalP = obj.P(type);
                 if H >= 0
                     obj.cEng = obj.cEng + H * obj.reeng * (obj.maxEng - obj.cEng);
                 else
@@ -63,7 +65,6 @@ classdef environment
                 r = r+10;
             end
             % add reward based on parameter value...
-            
             
         end
         

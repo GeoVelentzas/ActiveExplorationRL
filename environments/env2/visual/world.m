@@ -246,7 +246,7 @@ classdef world
         end
         
         function obj = robotAction(obj, act, param)
-            p = 0.6*((param-100)/200+1);
+            p = 0.1+0.6*((param-100)/200+1);
             a = 2;
             switch act
                 % ACTION 1 %%%%%%%%%%%%%%%%%

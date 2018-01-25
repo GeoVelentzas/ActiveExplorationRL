@@ -2,7 +2,6 @@ function drawstate( obj )
 
 figure(1);hold on; xlim([-10 10]); ylim([-10 10]); box on; cla; hold on; axis square;
 set(gca,'color',[0.99 0.99 0.99]);
-title(obj.time);
 
 %% draw positions
 px1 = obj.map.pos1(1); py1 = obj.map.pos1(2); c1=[0.89 0.99 0.89]; r1=0.8;
