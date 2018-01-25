@@ -12,11 +12,13 @@ D = [];                     %keep difference of optimal parameter value and chos
 %% choose a robot to load
 %robot : trained for only finding the optimal discrete actions without and engagement feedback
 %robot2: trained with maximizing engagement for P=[0 0 0 0 0 0];
+%robot3: trained with P1
 
-agent = 'robot3';       %chose an agent
-load([agent,'.mat']);   %load the agent (named "robot")
-load('states_visual');  %to display the initial state in command window
+rob = 'robot3';          %chose an agent
+load([rob,'.mat']);      %load the agent (named "robot")
+load('states_visual');   %to display the initial state in command window
 nsess = 10;              %choose number of sessions to visualize...
+robot = agent(120,6,100);
 
 %% prompt to give a starting state
 valid_states = 1:120; valid_states(118)=[];
