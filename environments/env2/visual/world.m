@@ -10,12 +10,12 @@ classdef world
             Smap = Smap.Smap;
             
             %child's characteristics
-            obj.child.head_angle = -pi/4; %!!! not changed?
+            obj.child.head_angle = -pi/2; %!!! not changed?
             obj.child.head_radius = 1.4;
             obj.child.head_pos = [0 4];
             obj.child.head_color = [0.95 0.95 1];
             obj.child.head_action_param = 0;
-            obj.child.head_angle_des = -pi/4; %!!
+            obj.child.head_angle_des = -pi/2; %!!
             
             %robot's characteristics
             obj.robot.head_angle_des = pi/2;
@@ -123,13 +123,13 @@ classdef world
                 end
             elseif p1<=18
                 obj.cube1.pos=obj.map.pos4;
-                if p1==13
+                if p1==18
                     obj.cube1.accessible = true;
                     obj.map.layer3(4) = 1;
-                elseif p1==12
+                elseif p1==17
                     obj.cube1.accessible = false;
                     obj.map.layer2(4) = 1;
-                elseif p1==11
+                elseif p1==16
                     obj.cube1.accessible = false;
                     obj.map.layer1(4) = 1;
                 end
@@ -245,9 +245,12 @@ classdef world
             drawstate(obj);
         end
         
-        function obj = robotAction(obj, act, param)
-            p = 0.1+0.6*((param-100)/200+1);
-            a = 2;
+        function obj = robotAction(obj, act, param, eng)
+            p = 0.6*((param-100)/200+1);
+            a = 1/p;
+            beta = 0.2;
+            gamma = 0.5;
+            sig = -pi*(eng-10)/40;
             switch act
                 % ACTION 1 %%%%%%%%%%%%%%%%%
                 case 1
@@ -257,6 +260,13 @@ classdef world
                         obj.robot.left_arm_pos = (1-p)*obj.robot.left_arm_pos + p*obj.map.pos1;
                         obj.robot.head_angle = (1-a*p)*obj.robot.head_angle + a*p*obj.robot.head_angle_des;
                         obj.robot.right_arm_pos = (1-p)*obj.robot.right_arm_pos + p*obj.robot.right_arm_pos_rest; %also move the other to rest..
+                        
+                        if rand>gamma
+                            poi = obj.robot.left_arm_pos; %point of interest;
+                            sample = datasample([0.1*randn-sig 0.1*randn+sig],1);
+                            theta = atan2(poi(2)-obj.child.head_pos(2), poi(1)-obj.child.head_pos(1));
+                            obj.child.head_angle = (1-beta)*obj.child.head_angle + beta*(theta+sample);
+                        end
                         drawstate(obj);
                     end
                     %grab what can be grabed there...
@@ -283,6 +293,12 @@ classdef world
                             obj.cube2.pos = obj.robot.left_arm_pos;
                         elseif obj.cube3.grabbed
                             obj.cube3.pos = obj.robot.left_arm_pos;
+                        end
+                        if rand>gamma
+                            poi = obj.robot.left_arm_pos; %point of interest;
+                            sample = datasample([0.1*randn-sig 0.1*randn+sig],1);
+                            theta = atan2(poi(2)-obj.child.head_pos(2), poi(1)-obj.child.head_pos(1));
+                            obj.child.head_angle = (1-beta)*obj.child.head_angle + beta*(theta+sample);
                         end
                         drawstate(obj);
                     end
@@ -318,7 +334,7 @@ classdef world
                         obj.robot.left_arm_pos = (1-p)*obj.robot.left_arm_pos + p*obj.robot.left_arm_pos_des;
                         drawstate(obj);
                         if norm(obj.robot.left_arm_pos_rest - obj.robot.left_arm_pos)<1.5
-                            actiondone = true;
+                            %%actiondone = true;
                             break;
                         end
                     end
@@ -330,6 +346,13 @@ classdef world
                         obj.robot.right_arm_pos = (1-p)*obj.robot.right_arm_pos + p*obj.map.pos3;
                         obj.robot.head_angle = (1-a*p)*obj.robot.head_angle + a*p*obj.robot.head_angle_des;
                         obj.robot.left_arm_pos = (1-p)*obj.robot.left_arm_pos + p*obj.robot.left_arm_pos_rest; %also move the other to rest..
+                        
+                        if rand>gamma
+                            poi = obj.robot.right_arm_pos; %point of interest;
+                            sample = datasample([0.1*randn-sig 0.1*randn+sig],1);
+                            theta = atan2(poi(2)-obj.child.head_pos(2), poi(1)-obj.child.head_pos(1));
+                            obj.child.head_angle = (1-beta)*obj.child.head_angle + beta*(theta+sample);
+                        end
                         drawstate(obj);
                     end
                     %grab what can be grabed there...
@@ -357,6 +380,13 @@ classdef world
                         elseif obj.cube3.grabbed
                             obj.cube3.pos = obj.robot.right_arm_pos;
                         end
+                        
+                        if rand>gamma
+                            poi = obj.robot.right_arm_pos; %point of interest;
+                            sample = datasample([0.1*randn-sig 0.1*randn+sig],1);
+                            theta = atan2(poi(2)-obj.child.head_pos(2), poi(1)-obj.child.head_pos(1));
+                            obj.child.head_angle = (1-beta)*obj.child.head_angle + beta*(theta+sample);
+                        end
                         drawstate(obj);
                     end
                     if obj.cube1.grabbed
@@ -391,7 +421,7 @@ classdef world
                         obj.robot.right_arm_pos = (1-p)*obj.robot.right_arm_pos + p*obj.robot.right_arm_pos_des;
                         drawstate(obj);
                         if norm(obj.robot.right_arm_pos_rest - obj.robot.right_arm_pos)<1.5
-                            actiondone = true;
+                            %actiondone = true;
                             break;
                         end
                     end
@@ -404,6 +434,13 @@ classdef world
                         obj.robot.right_arm_pos = (1-p)*obj.robot.right_arm_pos + p*obj.map.pos4;
                         obj.robot.head_angle = (1-a*p)*obj.robot.head_angle + a*p*obj.robot.head_angle_des;
                         obj.robot.left_arm_pos = (1-p)*obj.robot.left_arm_pos + p*obj.robot.left_arm_pos_rest; %also move the other to rest..
+                        
+                        if rand>gamma
+                            poi = obj.robot.right_arm_pos; %point of interest;
+                            sample = datasample([0.1*randn-sig 0.1*randn+sig],1);
+                            theta = atan2(poi(2)-obj.child.head_pos(2), poi(1)-obj.child.head_pos(1));
+                            obj.child.head_angle = (1-beta)*obj.child.head_angle + beta*(theta+sample);
+                        end
                         drawstate(obj);
                     end
                     %grab what can be grabed there...
@@ -431,6 +468,13 @@ classdef world
                         elseif obj.cube3.grabbed
                             obj.cube3.pos = obj.robot.right_arm_pos;
                         end
+                        
+                        if rand>gamma
+                            poi = obj.robot.right_arm_pos; %point of interest;
+                            sample = datasample([0.1*randn-sig 0.1*randn+sig],1);
+                            theta = atan2(poi(2)-obj.child.head_pos(2), poi(1)-obj.child.head_pos(1));
+                            obj.child.head_angle = (1-beta)*obj.child.head_angle + beta*(theta+sample);
+                        end
                         drawstate(obj);
                     end
                     if obj.cube1.grabbed
@@ -465,7 +509,7 @@ classdef world
                         obj.robot.right_arm_pos = (1-p)*obj.robot.right_arm_pos + p*obj.robot.right_arm_pos_des;
                         drawstate(obj);
                         if norm(obj.robot.right_arm_pos_rest - obj.robot.right_arm_pos)<1.5
-                            actiondone = true;
+                            %actiondone = true;
                             break;
                         end
                     end
@@ -477,6 +521,13 @@ classdef world
                         obj.robot.left_arm_pos = (1-p)*obj.robot.left_arm_pos + p*obj.map.pos2;
                         obj.robot.head_angle = (1-a*p)*obj.robot.head_angle + a*p*obj.robot.head_angle_des;
                         obj.robot.right_arm_pos = (1-p)*obj.robot.right_arm_pos + p*obj.robot.right_arm_pos_rest; %also move the other to rest..
+                        
+                        if rand>gamma
+                            poi = obj.robot.left_arm_pos; %point of interest;
+                            sample = datasample([0.1*randn-sig 0.1*randn+sig],1);
+                            theta = atan2(poi(2)-obj.child.head_pos(2), poi(1)-obj.child.head_pos(1));
+                            obj.child.head_angle = (1-beta)*obj.child.head_angle + beta*(theta+sample);
+                        end
                         drawstate(obj);
                     end
                     %grab what can be grabed there...
@@ -503,6 +554,12 @@ classdef world
                             obj.cube2.pos = obj.robot.left_arm_pos;
                         elseif obj.cube3.grabbed
                             obj.cube3.pos = obj.robot.left_arm_pos;
+                        end
+                        if rand>gamma
+                            poi = obj.robot.left_arm_pos; %point of interest;
+                            sample = datasample([0.1*randn-sig 0.1*randn+sig],1);
+                            theta = atan2(poi(2)-obj.child.head_pos(2), poi(1)-obj.child.head_pos(1));
+                            obj.child.head_angle = (1-beta)*obj.child.head_angle + beta*(theta+sample);
                         end
                         drawstate(obj);
                     end
@@ -538,7 +595,7 @@ classdef world
                         obj.robot.left_arm_pos = (1-p)*obj.robot.left_arm_pos + p*obj.robot.left_arm_pos_des;
                         drawstate(obj);
                         if norm(obj.robot.left_arm_pos_rest - obj.robot.left_arm_pos)<1.5
-                            actiondone = true;
+                            %actiondone = true;
                             break;
                         end
                     end
@@ -550,6 +607,13 @@ classdef world
                         obj.robot.right_arm_pos = (1-p)*obj.robot.right_arm_pos + p*obj.map.pos2;
                         obj.robot.head_angle = (1-a*p)*obj.robot.head_angle + a*p*obj.robot.head_angle_des;
                         obj.robot.left_arm_pos = (1-p)*obj.robot.left_arm_pos + p*obj.robot.left_arm_pos_rest; %also move the other to rest..
+                        
+                        if rand>gamma
+                            poi = obj.robot.right_arm_pos; %point of interest;
+                            sample = datasample([0.1*randn-sig 0.1*randn+sig],1);
+                            theta = atan2(poi(2)-obj.child.head_pos(2), poi(1)-obj.child.head_pos(1));
+                            obj.child.head_angle = (1-beta)*obj.child.head_angle + beta*(theta+sample);
+                        end
                         drawstate(obj);
                     end
                     %grab what can be grabed there...
@@ -576,6 +640,13 @@ classdef world
                             obj.cube2.pos = obj.robot.right_arm_pos;
                         elseif obj.cube3.grabbed
                             obj.cube3.pos = obj.robot.right_arm_pos;
+                        end
+                        
+                        if rand>gamma
+                            poi = obj.robot.right_arm_pos; %point of interest;
+                            sample = datasample([0.1*randn-sig 0.1*randn+sig],1);
+                            theta = atan2(poi(2)-obj.child.head_pos(2), poi(1)-obj.child.head_pos(1));
+                            obj.child.head_angle = (1-beta)*obj.child.head_angle + beta*(theta+sample);
                         end
                         drawstate(obj);
                     end
@@ -611,7 +682,7 @@ classdef world
                         obj.robot.right_arm_pos = (1-p)*obj.robot.right_arm_pos + p*obj.robot.right_arm_pos_des;
                         drawstate(obj);
                         if norm(obj.robot.right_arm_pos_rest - obj.robot.right_arm_pos)<1.5
-                            actiondone = true;
+                            %actiondone = true;
                             break;
                         end
                     end
@@ -623,6 +694,13 @@ classdef world
                         obj.robot.right_arm_pos = (1-p)*obj.robot.right_arm_pos + p*obj.map.pos2;
                         obj.robot.head_angle = (1-a*p)*obj.robot.head_angle + a*p*obj.robot.head_angle_des;
                         obj.robot.left_arm_pos = (1-p)*obj.robot.left_arm_pos + p*obj.robot.left_arm_pos_rest; %also move the other to rest..
+                        
+                        if rand>gamma
+                            poi = obj.robot.right_arm_pos; %point of interest;
+                            sample = datasample([0.1*randn-sig 0.1*randn+sig],1);
+                            theta = atan2(poi(2)-obj.child.head_pos(2), poi(1)-obj.child.head_pos(1));
+                            obj.child.head_angle = (1-beta)*obj.child.head_angle + beta*(theta+sample);
+                        end
                         drawstate(obj);
                     end
                     %grab what can be grabed there...
@@ -649,6 +727,12 @@ classdef world
                             obj.cube2.pos = obj.robot.right_arm_pos;
                         elseif obj.cube3.grabbed
                             obj.cube3.pos = obj.robot.right_arm_pos;
+                        end
+                        if rand>gamma
+                            poi = obj.robot.right_arm_pos; %point of interest;
+                            sample = datasample([0.1*randn-sig 0.1*randn+sig],1);
+                            theta = atan2(poi(2)-obj.child.head_pos(2), poi(1)-obj.child.head_pos(1));
+                            obj.child.head_angle = (1-beta)*obj.child.head_angle + beta*(theta+sample);
                         end
                         drawstate(obj);
                     end
@@ -684,7 +768,7 @@ classdef world
                         obj.robot.right_arm_pos = (1-p)*obj.robot.right_arm_pos + p*obj.robot.right_arm_pos_des;
                         drawstate(obj);
                         if norm(obj.robot.right_arm_pos_rest - obj.robot.right_arm_pos)<1.5
-                            actiondone = true;
+                            %actiondone = true;
                             break;
                         end
                     end

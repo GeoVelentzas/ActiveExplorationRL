@@ -1,4 +1,5 @@
-clear; close all; clc;
+function [E, U, D] = runInteractive(robot, nsess)
+
 addpath(genpath('./'));
 
 %% initializations
@@ -9,28 +10,9 @@ env = environment(T,O,P);   %environment for state transitions and rewards
 E = [];                     %engagement array
 U = [];                     %uncertainty of actions array...
 D = [];                     %keep difference of optimal parameter value and chosen
-%% choose a robot to load
-%robot : trained for only finding the optimal discrete actions without and engagement feedback
-%robot2: trained with maximizing engagement for P=[0 0 0 0 0 0];
 
-agent = 'robot3';       %chose an agent
-load([agent,'.mat']);   %load the agent (named "robot")
-load('states_visual');  %to display the initial state in command window
-nsess = 10;              %choose number of sessions to visualize...
+s_init = 1;
 
-%% prompt to give a starting state
-valid_states = 1:120; valid_states(118)=[];
-valid_input = false;
-while ~valid_input
-    s_init = input('give a starting state from 1-120 (state 118 is final) : ');
-    if ismember(s_init, valid_states)
-        valid_input = true;
-    else
-        disp('not a valid initial state...');
-    end
-end
-display(['initialized in state ', num2str(s_init)]);
-display(states_visual(s_init,:));
 figure(1);
 figure(2);
 %% initialize world and start fisualization
@@ -52,7 +34,7 @@ for session = 1:nsess
     
         figure(1); cla;
         title(['action: ', num2str(a), ' ,parameter: ', num2str(p), ' ,uncertainty: ', num2str(robot.sigmas(s,a))]);
-        canvas = canvas.robotAction(a, p, env.cEng);
+        canvas = canvas.robotAction(a, p);
         sp = env.s;
         robot = robot.learn(s,a,p,r,sp);
         s = env.s;
@@ -95,15 +77,4 @@ text(0,0,txt1,'VerticalAlignment', 'middle', 'HorizontalAlignment', 'center'); h
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+end

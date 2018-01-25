@@ -76,40 +76,6 @@ end
 
 
 
-%%
-
-%         if (a.action == BBT.optimal(s))
-%             %% gaussian child engagement
-%             % probaEng is between -1 (disengagement) and 1 (reengagement)
-%             % a.param is the continuous parameter executed by the robot
-%             % BBT.engMu is the optimal parameter
-%             probaEng = (exp((- (a.param - BBT.engMu(s)) ^ 2) / (2 * BBT.engSig ^ 2)) - 0.5) * 2;
-%             if (probaEng >= 0)
-%                 BBT.cENG = BBT.cENG + probaEng * BBT.reeng * (BBT.maxENG - BBT.cENG);
-%                 %r = 1;
-%             else
-%                 BBT.cENG = BBT.cENG - probaEng * BBT.forget * (BBT.minENG - BBT.cENG);
-%                 %r = 0;
-%             end
-%         else % the robot performed a non-optimal action
-%             BBT.cENG = BBT.cENG + BBT.forget * (BBT.minENG - BBT.cENG);
-%             %r = 0;
-%         end
-% %     else % other state than terminal state
-% %         %r = 0;
-% %     end
-%     %% setting the reward as a function of the difference in engagement
-%     %r = BBT.cENG - oldEng; % reward = variations in child engagement
-%     %r = (BBT.cENG - 5) / 20; % reward = (child engagement - 5) / 5
-%     r = (1 - BBT.lambdaRwd) * (BBT.cENG - 5) / 5 + BBT.lambdaRwd * 2 * (BBT.cENG - oldEng); % mixed reward function
-%     %r = (1 - BBT.lambdaRwd) * BBT.cENG + BBT.lambdaRwd *(BBT.cENG - oldEng);
-%
-%
-
-
-
-
-
 
 
 

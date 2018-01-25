@@ -1,7 +1,8 @@
 clear; close all; clc;
 addpath(genpath('./'));
 load('T'); load('O');
-P = [0 0 0 0 0 0];
+%P = [0 0 0 0 0 0];
+load('P1.mat');
 
 % create the environment with a Given Transition Matrix
 env = environment(T,O,P);
@@ -91,7 +92,7 @@ subplot(3,1,2);
 scatter(R, S); box on; hold on;
 subplot(3,1,3);
 scatter(1:size(H,1), H(:,1), '.'); box on; title('states visited');
-disp('agent trained....')
+disp('agent trained.... you may save it')
 
 
 
