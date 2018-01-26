@@ -2,7 +2,7 @@ clear; close all; clc;
 addpath(genpath('./'));
 
 %% 
-nsess = 50;                 %choose number of sessions to visualize...
+nsess = 100;                 %choose number of sessions to visualize...
 %% initializations
 load('T');                  %transition matrix
 load('O');                  %optimal actions at each state
@@ -15,11 +15,9 @@ O = [];                     %track if the actions chosen are optimal
 OP= [];                     %optimal parameters for the actions taken
 B = [];                     %inverse temperature at this state
 %% choose a robot to load or a new agent...
-rob = 'robot7';             %chose an agent
+rob = 'robot6';             %chose an agent
 load([rob,'.mat']);         %load the agent (named "robot")
 load('states_visual');      %to display the initial state in command window
-robot.tau1 = 5;
-ro
 robot1 = robot;
 robot2 = agent(120,6,100);
 robot = robot2;
@@ -78,8 +76,16 @@ for session = 1:nsess
         opt = O(max(1,length(O)-50):end);
         subplot(3,10,6:10);
         plot(x,eng, '-.gs', 'MarkerSize', 5, 'MarkerEdgeColor', 'r', 'MarkerFaceColor', 'k'); 
-        box on; xlim(lim); ylim([0 10]); title('engagement'); xlabel('episode');
+        box on; xlim(lim); ylim([0 10]); title('engagement');
         %subplot(3,10,6:10);
+        subplot(3,10,16:17);
+        bar(robot.Q(s,:), 0.4, 'FaceColor',[0 .5 .5],'EdgeColor',[0.9 0 0.9]); hold off; box on; xlim([0.5 6.5]); ylim([-5 5]);
+        title('Q-Values');
+        
+        subplot(3,10,18:20); box on;
+        patch(env.optimalP-11
+        
+        
         subplot(3,10,26);
         if O(end)
             bar(1,'g'); box on; ylim([0 1]); title('AT');
