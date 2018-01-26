@@ -20,7 +20,7 @@ classdef agent
             obj.Q = 0 * ones(nS,nA);
             obj.nA = nA;
             obj.nS = nS;
-            obj.interval = -param_scale:0.1:param_scale;
+            obj.interval = -param_scale:0.01:param_scale;
             obj.metaparams = 0 *ones(1,nS);
             obj.metaparams2 = 0 *ones(nS,nA);
             obj.alphaC = 0.1;   %def 0.1
@@ -39,9 +39,6 @@ classdef agent
         end
         
         function [obj,a,p] = decide(obj, s)
-            obj.ACT = obj.wA(s,:); %from Actor of CACLA
-            obj.VC = obj.wC(s);    %from the Critic of CACLA
-            obj.betas(s) = max(0, obj.metaparams(s)+10); %+10 for multi state
             logits = min(obj.betas(s)*obj.Q(s,:) , ones(1,obj.nA)*700);
             proba = exp(logits) / sum(exp(logits));
             a = drand01(proba);
@@ -50,7 +47,7 @@ classdef agent
                 smin = 0.5;  %minimum std
                 smax = 40;   %maximum std
                 if i == a
-                    obj.sigmas(s, i) = (smax-smin)./(1+(smax-1-smin)*exp(obj.gainSigma*(obj.metaparams2(s, i)-0.25)))+smin; %0.1 default
+                    obj.sigmas(s, i) = (smax-smin)./(1+(smax-1-smin)*exp(obj.gainSigma*(obj.metaparams2(s, i)-0.1)))+smin;
                 end
             end
             pisa = exp(- (obj.interval - p) .^ 2 ./ (2 * obj.sigmas(s, a) ^ 2)) ./ (sqrt(2 * pi)* obj.sigmas(s, a));
@@ -77,7 +74,11 @@ classdef agent
             
             % maybe try this only if deltaV>0
             obj.wA(s,a) = obj.wA(s,a) + obj.alphaA*deltaV*(p-obj.ACT(a));
-                        
+            
+            obj.ACT = obj.wA(s,:); %from Actor of CACLA
+            obj.VC = obj.wC(s);    %from the Critic of CACLA
+            obj.betas(s) = max(0, obj.metaparams(s)+10); %+10 for multi state
+            
         end
         
     end

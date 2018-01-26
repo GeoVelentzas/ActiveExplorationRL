@@ -1,6 +1,8 @@
 function drawstate( obj )
 
-figure(1);hold on; xlim([-10 10]); ylim([-10 10]); box on; cla; hold on; axis square;
+figure(1);
+subplot(3,10,[1:5, 11:15, 21:25]);
+hold on; xlim([-10 10]); ylim([-10 10]); box on; cla; hold on; axis square;
 set(gca,'color',[0.99 0.99 0.99]);
 
 %% draw positions

@@ -1,24 +1,28 @@
 clear; close all; clc;
 addpath(genpath('./'));
 
+
+nsess = 30;                 %choose number of sessions to visualize...
+
 %% initializations
 load('T');                  %transition matrix
 load('O');                  %optimal actions at each state
 load('P1');                 %optimal parameters for optimal actions
-env = environment(T,O,P);   %environment for state transitions and rewards
+load('V');
+env = environment(T,O,P,V); %environment for state transitions and rewards
 E = [];                     %engagement array
 U = [];                     %uncertainty of actions array...
 D = [];                     %keep difference of optimal parameter value and chosen
+O = [];                     %track if the actions chosen are optimal
 %% choose a robot to load
 %robot : trained for only finding the optimal discrete actions without and engagement feedback
 %robot2: trained with maximizing engagement for P=[0 0 0 0 0 0];
 %robot3: trained with P1
 
-rob = 'robot';          %chose an agent
-load([rob,'.mat']);      %load the agent (named "robot")
-load('states_visual');   %to display the initial state in command window
-nsess = 10;              %choose number of sessions to visualize...
-robot = agent(120,6,100);
+rob = 'robot6';             %chose an agent
+load([rob,'.mat']);         %load the agent (named "robot")
+load('states_visual');      %to display the initial state in command window
+robot = agent(120,6,100);  %or start a new agent... 
 
 %% prompt to give a starting state
 valid_states = 1:120; valid_states(118)=[];
@@ -46,7 +50,14 @@ for session = 1:nsess
     env.s = s_init;
     
     while ~solved
-        [robot, a, p] = robot.decide(s);
+        validAction = false;
+        while ~validAction
+            clear temp
+            [temp, a, p] = robot.decide(s);
+            validAction = env.V(env.s,a);
+        end
+        robot = temp;
+        O = [O env.O(s,a)];
         [env,r] = env.step(a,p);
         E = [E env.cEng];
         U = [U robot.sigmas(s,a)];
@@ -64,14 +75,14 @@ for session = 1:nsess
         
         eng = E(max(1,length(E)-50):end);
         unc = U(max(1,length(U)-50):end);
-        dif = D(max(1,length(D)-50):end);
+        opt = O(max(1,length(O)-50):end);
         figure(2);
         subplot(3,1,1);
         plot(eng, 'k-.'); box on; xlim([0 50]); ylim([0 10]); title('engagement');
         subplot(3,1,2);
         bar(unc, 'r'); box on; xlim([0 50]); ylim([0 40]); title('uncertainty');
         subplot(3,1,3);
-        bar(dif, 'g'); box on; xlim([0 50]); ylim([0 40]); title('difference of parameter from the optimal one');
+        bar(imcomplement(opt), 'k'); box on; xlim([0 1]); ylim([0 40]); title('non optimal actions...');
     end
     
     %reseting session...

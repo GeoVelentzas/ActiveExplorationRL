@@ -251,12 +251,12 @@ classdef world
             else
                 eng = varargin{1};
             end
-            p = 0.15 + 0.6*((param-100)/200+1);
+            p = 0.1 + 0.6*((param-100)/200+1);
             a = 1/p;
             beta = 0.2;
             gamma = 0.4;
-            sig = -pi*(eng-10)/30;
-            sgn = 2*(randn>-1)-1;
+            sig = -pi*(eng-10)/20;
+            sgn = [randn>0];
             sig= sgn*sig;
             switch act
                 % ACTION 1 %%%%%%%%%%%%%%%%%
