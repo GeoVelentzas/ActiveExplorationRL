@@ -2,7 +2,7 @@ clear; close all; clc;
 addpath(genpath('./'));
 
 %% 
-nsess = 50;                 %choose number of sessions to visualize...
+nsess = 1000;                 %choose number of sessions to visualize...
 %% initializations
 load('T');                  %transition matrix
 load('O');                  %optimal actions at each state
@@ -21,7 +21,7 @@ load('states_visual');      %to display the initial state in command window
 robot1 = robot;
 robot2 = agent(120,6,100);
 robot = robot2;
-
+visual = true;
 cp = false;
 %P2 = [30 10 10 20 -30 -10]; %new parameters for change point
 P2 = P; P2(2) = 20;
@@ -35,14 +35,22 @@ btn1 = uicontrol('Style', 'pushbutton', 'String', 'Untrained Robot',...
 btn2 = uicontrol('Style', 'pushbutton', 'String', 'Trained Robot',...
         'Position', [20 70 100 50],...
         'Callback', 'robot = robot1;');  
-btn2 = uicontrol('Style', 'pushbutton', 'String', 'Change Point!',...
+btn3 = uicontrol('Style', 'pushbutton', 'String', 'Change Point!',...
         'Position', [20 120 100 50],...
         'Callback', 'env.P=P2; cp=true;');  
+btn4 = uicontrol('Style', 'pushbutton', 'String', 'Non Visual',...
+        'Position', [20 170 100 50],...
+        'Callback', 'visual=false;');  
+btn4 = uicontrol('Style', 'pushbutton', 'String', 'Visual',...
+        'Position', [20 220 100 50],...
+        'Callback', 'visual=true;');  
 %% initialize world and start fisualization
 for session = 1:nsess
     
     canvas = world(s_init);
-    canvas.visualize();
+    if visual
+        canvas.visualize();
+    end
     solved = false;
     pause(0.2);
     s = s_init;
@@ -75,7 +83,7 @@ for session = 1:nsess
         end
         opt = O(max(1,length(O)-50):end);
         subplot(3,10,6:10);
-        plot(x,eng, '-.gs', 'MarkerSize', 5, 'MarkerEdgeColor', 'r', 'MarkerFaceColor', 'k'); 
+        plot(x,eng, '-.gs', 'MarkerSize', 5, 'MarkerEdgeColor', 'r', 'MarkerFaceColor', 'k');
         box on; xlim(lim); ylim([0 10]); title('engagement'); xlabel('episode');
         %subplot(3,10,6:10);
         subplot(3,10,26);
@@ -86,24 +94,27 @@ for session = 1:nsess
         end
         if O(end)
             subplot(3,10,27);
-            bar(OP(end), 'b'); box on; ylim([-100 100]); title('OP')
+            bar(OP(end), 'b'); box on; ylim([-100 100]); title('OP');
             subplot(3,10,28);
             bar(p, 'b'); box on; ylim([-100 100]); title('PT');
         else
             subplot(3,10,27);
-            bar(0,'b');  box on; ylim([-100 100]); title('OP')
+            bar(0,'b');  box on; ylim([-100 100]); title('OP');
             subplot(3,10,28);
-            bar(0,'b');  box on; ylim([-100 100]); title('PT')
+            bar(0,'b');  box on; ylim([-100 100]); title('PT');
         end
         subplot(3,10,29);
         bar(B(end),'k'); ylim([5 15]); title('\beta(s)');
         subplot(3,10,30);
         bar(S(end),'r'); ylim([0 40]); title('\sigma(s,a)');
         
-        
         % visualize movement...
-        figure(1); 
-        canvas = canvas.robotAction(a, p, env.cEng);
+        if visual
+            figure(1); 
+            canvas = canvas.robotAction(a, p, env.cEng);
+        else
+            drawnow;
+        end
         sp = env.s;
         robot = robot.learn(s,a,p,r,sp);
         s = env.s;
@@ -115,10 +126,12 @@ for session = 1:nsess
     
     %reseting session...
     if session ~= nsess
-        figure(1);
-        txt1 = 'Reseting...';
-        text(0,0,txt1,'VerticalAlignment', 'middle', 'HorizontalAlignment', 'center'); hold off;
-        pause(1);
+        if visual
+            figure(1);
+            txt1 = 'Reseting...';
+            text(0,0,txt1,'VerticalAlignment', 'middle', 'HorizontalAlignment', 'center'); hold off;
+            pause(1);
+        end
     end
     
     %re-initialize in a new state
@@ -133,6 +146,7 @@ for session = 1:nsess
 end
 
 figure(1);
+canvas.visualize();
 txt1 = 'End of Simulation';
 text(0,0,txt1,'VerticalAlignment', 'middle', 'HorizontalAlignment', 'center'); hold off;
 
