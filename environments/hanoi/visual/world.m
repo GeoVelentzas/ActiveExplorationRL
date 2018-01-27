@@ -7,7 +7,7 @@ classdef world
         function obj = world(state)
             obj.time = 0;
             Smap = load('S');
-            Smap = num2str(Smap);
+            Smap = num2str(Smap.S);
             
             %child's characteristics
             obj.child.head_angle = -pi/2; %!!! not changed?
