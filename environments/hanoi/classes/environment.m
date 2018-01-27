@@ -47,10 +47,9 @@ classdef environment
                 r2 = -10;
                 obj.optimalP = 0; %no meaning...
             end
-            %r = (obj.lambdaRwd)*(obj.cEng-5)/5 + (1-obj.lambdaRwd)*(obj.cEng-oldEng)/10;
             r1 = (1 - obj.lambdaRwd) * (obj.cEng - 5) / 5 + obj.lambdaRwd * 2 * (obj.cEng - oldEng); % mixed reward function
             obj.s = obj.T(obj.s, action);
-            %if obj.s == 118
+            %if obj.s == 26
             %    r2 = 10;
             %end
             r = r1+r2;%
