@@ -45,18 +45,18 @@ btn3 = uicontrol('Style', 'pushbutton', 'String', 'Change Point!',...
 btn4 = uicontrol('Style', 'pushbutton', 'String', 'Fast Forward',...
         'Position', [20 225 120 50],...
         'Callback', 'visual=false;');  
-btn5 = uicontrol('Style', 'pushbutton', 'String', 'Visual',...
+btn5 = uicontrol('Style', 'pushbutton', 'String', 'Show Robot',...
         'Position', [20 275 120 50],...
-        'Callback', 'visual=true;');  
+        'Callback', 'visual=true; canvas=world(s); canvas.visualize();');  
 btn6 = uicontrol('Style', 'pushbutton', 'String', 'Stop Sim',...
         'Position', [20 325 120 50],...
         'Callback', 'sim=false;');  
     
-set(btn1,'BackgroundColor',[0 0 1]);
-set(btn2,'BackgroundColor',[0 0 1]);
-set(btn3,'BackgroundColor',[0 0 1]);
-set(btn4,'BackgroundColor',[0 0 1]);
-set(btn5,'BackgroundColor',[0 0 1]);
+set(btn1,'BackgroundColor',[0.8 0.8 1]);
+set(btn2,'BackgroundColor',[0.8 0.8 1]);
+set(btn3,'BackgroundColor',[0.8 0.8 1]);
+set(btn4,'BackgroundColor',[0.8 0.8 1]);
+set(btn5,'BackgroundColor',[0.8 0.8 1]);
 set(btn6,'BackgroundColor',[1 0 0]);
 %% initialize world and start fisualization
 session = 0;
@@ -191,11 +191,12 @@ while sim
 end
 
 
-figure(2);
+figure(1);
+subplot(3,10,6:10); cla;
 for c= ChangeTime
     plot([c c], [0 10], '--', 'Color', [0.7 0.7 0.7]); ylim([0 10]); hold on;
 end
-plot(E, 'k'); title('engagement'); 
+plot(1:length(E), E, 'k'); title('engagement'); xlabel('episodes');
 
 
 
