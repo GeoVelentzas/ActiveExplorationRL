@@ -2,7 +2,8 @@ clear; close all; clc;
 addpath(genpath('./'));
 
 %% 
-nsess = 1000;                 %choose number of sessions to visualize...
+nsess = inf;                 %choose number of sessions to visualize...
+sim = true;
 %% initializations
 load('T');                  %transition matrix
 load('O');                  %optimal actions at each state
@@ -20,33 +21,39 @@ load([rob,'.mat']);         %load the agent (named "robot")
 load('states_visual');      %to display the initial state in command window
 robot1 = robot;
 robot2 = agent(120,6,100);
-robot = robot2;
+%robot = robot2;
 visual = true;
 cp = false;
+newrob = false;
 %P2 = [30 10 10 20 -30 -10]; %new parameters for change point
-P2 = P; P2(2) = 20;
+P2 = P; P2(2) = -10;
 P1 = P;
+ChangeTime = [];
 starting_state = 1;  %% you can change this
 s_init = starting_state;
 figure('units','normalized','outerposition',[0 0 1 1])
-btn1 = uicontrol('Style', 'pushbutton', 'String', 'Untrained Robot',...
-        'Position', [20 70 100 50],...
-        'Callback', 'robot = robot2');  
+btn1 = uicontrol('Style', 'pushbutton', 'String', 'New Robot',...
+        'Position', [20 70 120 50],...
+        'Callback', 'robot = robot2; newrob = true;');  
 btn2 = uicontrol('Style', 'pushbutton', 'String', 'Trained Robot',...
-        'Position', [20 120 100 50],...
-        'Callback', 'robot = robot1;');  
+        'Position', [20 120 120 50],...
+        'Callback', 'robot = robot1; newrob=false;');  
 btn3 = uicontrol('Style', 'pushbutton', 'String', 'Change Point!',...
-        'Position', [20 170 100 50],...
-        'Callback', 'env.P=P2; cp=true;');  
-btn4 = uicontrol('Style', 'pushbutton', 'String', 'Non Visual',...
-        'Position', [20 220 100 50],...
+        'Position', [20 170 120 50],...
+        'Callback', 'env.P=P2; P2 = P1; P1 = env.P; cp=true; ChangeTime = [ChangeTime length(E)];');  
+btn4 = uicontrol('Style', 'pushbutton', 'String', 'Fast Forward',...
+        'Position', [20 220 120 50],...
         'Callback', 'visual=false;');  
 btn5 = uicontrol('Style', 'pushbutton', 'String', 'Visual',...
-        'Position', [20 270 100 50],...
+        'Position', [20 270 120 50],...
         'Callback', 'visual=true;');  
+btn6 = uicontrol('Style', 'pushbutton', 'String', 'Stop Sim',...
+        'Position', [20 320 120 50],...
+        'Callback', 'sim=false;');  
 %% initialize world and start fisualization
-for session = 1:nsess
-    
+session = 0;
+while sim
+    session = session + 1;    
     canvas = world(s_init);
     if visual
         canvas.visualize();
@@ -56,6 +63,9 @@ for session = 1:nsess
     s = s_init;
     env.s = s_init;
     while ~solved
+        if ~sim
+            break;
+        end
         validAction = false;
         while ~validAction
             clear temp
@@ -94,35 +104,42 @@ for session = 1:nsess
         cla; 
         box on;
         op = env.optimalP;
-        patch([op+11 op-11 op-11 op+11], [0 0 1 1], [0.5 0.5 0.5]); xlim([-100 100]); hold on;
-        x = -100:0.1:100;
+        patch([op+11 op-11 op-11 op+11], [0 0 1 1], [0.8 0.8 0.8], 'EdgeColor', 'None'); 
+        xlim([-100 100]); ylim([0 0.15]); hold on; title('parameter pdf'); set(gca,'ytick',[]);
+        x = -200:0.05:200;
         m = robot.ACT(a);
         sigma = robot.sigmas(s,a);
         distrib = normpdf(x,m,sigma);
-        plot(x,distrib,'r'); xlim([-100 100]);
+        patch([-200:0.05:200 200:-0.05:-200], [distrib 0*[-200:0.05:200]],[1 0 0], 'EdgeColor', 'None'); xlim([-100 100]); alpha(0.5); 
         
         
         subplot(3,10,26);
         if O(end)
-            bar(1,'g'); box on; ylim([0 1]); title('AT');
+            %bar(1,'g'); box on; ylim([0 1]); title('AT');
+            bar1(1,'g','None',1); box on; ylim([0 1]); title('AT'); xlim([0 1]); set(gca,'xtick',[]); set(gca,'ytick',[]);
         else
-            bar(1,'r'); box on; ylim([0 1]); title('AT');
+            %bar(1,'r'); box on; ylim([0 1]); title('AT');
+            bar1(1,'r','None',1); box on; ylim([0 1]); title('AT'); xlim([0 1]); set(gca,'xtick',[]); set(gca,'ytick',[]);
         end
         if O(end)
-            subplot(3,10,27);
-            bar(OP(end), 'b'); box on; ylim([-100 100]); title('OP')
-            subplot(3,10,28);
-            bar(p, 'b'); box on; ylim([-100 100]); title('PT');
+            subplot(3,10,27); cla;
+            %bar(OP(end), 'b'); box on; ylim([-100 100]); title('OP')
+            bar1(OP(end),'b','None',0.6); box on; ylim([-100 100]); title('OP'); hold on; plot([-1 2], [0 0], 'k'); xlim([-1 2]); set(gca,'xtick',[]);
+            subplot(3,10,28); cla;
+            %bar(p, 'b'); box on; ylim([-100 100]); title('PT');
+            bar1(p,'b','None',0.6); box on; ylim([-100 100]); title('PT'); hold on; plot([-1 2], [0 0], 'k'); xlim([-1 2]); set(gca,'xtick',[]);
         else
-            subplot(3,10,27);
-            bar(0,'b');  box on; ylim([-100 100]); title('OP')
-            subplot(3,10,28);
-            bar(0,'b');  box on; ylim([-100 100]); title('PT')
+            subplot(3,10,27); cla;
+            bar(0,'b');  box on; ylim([-100 100]); title('OP'); set(gca,'xtick',[]);
+            subplot(3,10,28); cla;
+            bar(0,'b');  box on; ylim([-100 100]); title('PT'); set(gca,'xtick',[]);
         end
-        subplot(3,10,29);
-        bar(B(end),'k'); ylim([5 15]); title('\beta(s)');
-        subplot(3,10,30);
-        bar(S(end),'r'); ylim([0 40]); title('\sigma(s,a)');
+        subplot(3,10,29); cla;
+        %bar(B(end),'k'); ylim([5 15]); title('\beta(s)');
+        bar1(B(end),'k','None',0.8); box on; ylim([5 15]); title('\beta(s)'); hold on; plot([-1 2], [0 0], 'k'); xlim([-1 2]); set(gca,'xtick',[]);
+        subplot(3,10,30); cla;
+        %bar(S(end),'r'); ylim([0 40]); title('\sigma(s,a)');
+        bar1(S(end),'r','None',0.8); box on; ylim([0 40]); title('\sigma(s,a)'); hold on; plot([-1 2], [0 0], 'k'); xlim([-1 2]); set(gca,'xtick',[]);
         
         if ~visual
             drawnow;
@@ -144,10 +161,10 @@ for session = 1:nsess
     
     %reseting session...
     if session ~= nsess
-        if visual
+        if visual&&sim
             figure(1);
             txt1 = 'Reseting...';
-            text(0,0,txt1,'VerticalAlignment', 'middle', 'HorizontalAlignment', 'center'); hold off;
+            text(0,0,txt1,'VerticalAlignment', 'middle', 'HorizontalAlignment', 'center', 'Color', [1 1 1]); hold off;
             pause(1);
         end
     end
@@ -158,14 +175,19 @@ for session = 1:nsess
         s_init = randi(120);
         if cp
             s_init = starting_state;
+        elseif newrob
+            s_init = starting_state;
         end
     end
 
 end
 
-figure(1);
-txt1 = 'End of Simulation';
-text(0,0,txt1,'VerticalAlignment', 'middle', 'HorizontalAlignment', 'center'); hold off;
+
+figure(2);
+for c= ChangeTime
+    plot([c c], [0 10], '--', 'Color', [0.7 0.7 0.7]); ylim([0 10]); hold on;
+end
+plot(E, 'k'); title('engagement'); 
 
 
 

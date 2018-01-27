@@ -45,9 +45,11 @@ classdef agent
             logits = min(obj.betas(s)*obj.Q(s,:) , ones(1,obj.nA)*700);
             proba = exp(logits) / sum(exp(logits));
             a = drand01(proba);
+            obj.ACT(a) = max(obj.ACT(a), -100);
+            obj.ACT(a) = min(obj.ACT(a), 100);
             p = obj.ACT(a); 
             for i = 1:obj.nA
-                smin = 0.5;  %minimum std
+                smin = 3;   %minimum std
                 smax = 40;   %maximum std
                 if i == a
                     obj.sigmas(s, i) = (smax-smin)./(1+(smax-1-smin)*exp(obj.gainSigma*(obj.metaparams2(s, i)-0.25)))+smin; %0.1 default
@@ -66,7 +68,9 @@ classdef agent
             obj.stars2(s,a) = obj.stars2(s,a) + (r-obj.stars2(s,a))/obj.tau1;
             obj.mtars2(s,a) = obj.mtars2(s,a) + (obj.stars2(s,a) - obj.mtars2(s,a))/obj.tau2;
             obj.metaparams2(s,a) = obj.metaparams2(s,a) + obj.mu*(obj.stars2(s,a)-obj.mtars2(s,a));
-
+            %obj.metaparams2(s,a) = min(0.5, obj.metaparams2(s,a));
+            %obj.metaparams2(s,a) = max(-0.4, obj.metaparams2(s,a));
+            
             newQvalues = obj.Q(sp,:);
             deltaQ = r + obj.gamma*max(newQvalues) - obj.Q(s,a);
             obj.Q(s,a) = obj.Q(s,a) + obj.alphaQ*deltaQ;
@@ -75,9 +79,9 @@ classdef agent
             deltaV = r + obj.gamma*value - obj.VC;
             obj.wC(s) = obj.wC(s) + obj.alphaC*deltaV;
             
-            % maybe try this only if deltaV>0
-            obj.wA(s,a) = obj.wA(s,a) + obj.alphaA*deltaV*(p-obj.ACT(a));
-                        
+            if deltaV>0
+                obj.wA(s,a) = obj.wA(s,a) + obj.alphaA*deltaV*(p-obj.ACT(a));
+            end
         end
         
     end

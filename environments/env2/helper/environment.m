@@ -56,10 +56,10 @@ classdef environment
                 obj.optimalP = obj.P(type);
                 if H >= 0
                     obj.cEng = obj.cEng + H * obj.reeng * (obj.maxEng - obj.cEng);
-                    r2 = 5;
+                    r2 = 1;
                 else
                     obj.cEng = obj.cEng - H * obj.forget * (obj.minEng - obj.cEng);
-                    r2 = -1;
+                    r2 = -0;
                 end
             else %action is not the optimal here....
                 obj.cEng = obj.cEng + obj.forget * (obj.minEng - obj.cEng);
@@ -73,7 +73,7 @@ classdef environment
             %    r2 = 10;
             %end
             r = r1+r2;%
-%             r = r1;
+            %r = r1;
             % add reward based on parameter value...
             
         end

@@ -11,7 +11,7 @@ load('robot8'); %load a pretrained agent...
 % History of transitions (s,a,r,sp);
 H = [];
 curriculum = inf;
-repeat = 10;
+repeat = 20;
 counter = 0;
 counter1 = 0;
 %episodes = 12000; %curriculum*repeat*120;
@@ -49,6 +49,8 @@ while ~Trained
         s_init = min(s_init+1, 120); %start training from next state
         if s_init==118
             s_init = 119;
+        elseif s_init == 88
+            s_init = 91;
         end
         env.s = s_init;
         counter = 0;
