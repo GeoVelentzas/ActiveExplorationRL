@@ -2,16 +2,16 @@ classdef environment
     properties
         %T: Transition Matrix
         %O: Optimal Actions-Params
-        T; O; P; s; sp; r; engSig; minEng; maxEng; cEng; reeng; forget; lambdaRwd; optimalP; V; OptPar;
+        T; O; P; s; sp; r; engSig; minEng; maxEng; cEng; reeng; forget; lambdaRwd; optimalP; V; ParamType;
     end
     
     methods
-        function obj = environment(T,O,P,varargin)
+        function obj = environment(T,O,P,V,ParamType)
             obj.s = 1;
             obj.sp = 1;
             obj.T = T;
             obj.O = O;
-            obj.engSig = 10;
+            obj.engSig = 10; %tolearance
             obj.minEng = 0;
             obj.maxEng = 10;
             obj.cEng = (obj.maxEng+obj.minEng)/2;
@@ -20,21 +20,15 @@ classdef environment
             obj.lambdaRwd = 0.7;
             obj.P = P;
             obj.optimalP = 0;
-            if nargin<4
-                obj.V = ones(size(T,1), size(T,2));
-            else
-                obj.V = varargin{1};
-            end
+            obj.V = V;
+            obj.ParamType = ParamType;
         end
         
         function [obj,r] = step(obj, action, p) %or try two params per action...
             oldEng = obj.cEng;
-            s1 = obj.s;
-            s2 = obj.T(s1, action);
             if obj.O(obj.s,action) %action is optimal here...
-                obj.optimalP = obj.P(obj.OptPar(s));
-                H = (exp((- (p - obj.P(type)) ^ 2) / (2 * obj.engSig ^ 2)) - 0.5) * 2;
-                obj.optimalP = obj.P(type);
+                obj.optimalP = obj.P(obj.ParamType(obj.s)); %optimal parameter at this state for the optimal action... 
+                H = (exp((- (p - obj.optimalP) ^ 2) / (2 * obj.engSig ^ 2)) - 0.5) * 2;
                 if H >= 0
                     obj.cEng = obj.cEng + H * obj.reeng * (obj.maxEng - obj.cEng);
                     r2 = 1;
@@ -49,9 +43,9 @@ classdef environment
             end
             r1 = (1 - obj.lambdaRwd) * (obj.cEng - 5) / 5 + obj.lambdaRwd * 2 * (obj.cEng - oldEng); % mixed reward function
             obj.s = obj.T(obj.s, action);
-            %if obj.s == 26
-            %    r2 = 10;
-            %end
+%             if obj.s == 26
+%                r2 = 1;
+%             end
             r = r1+r2;%
             %r = r1;
             % add reward based on parameter value...

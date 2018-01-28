@@ -49,7 +49,7 @@ classdef agent
             obj.ACT(a) = min(obj.ACT(a), 100);
             p = obj.ACT(a); 
             for i = 1:obj.nA
-                smin = 3;   %minimum std
+                smin = 2;   %minimum std
                 smax = 40;   %maximum std
                 if i == a
                     obj.sigmas(s, i) = (smax-smin)./(1+(smax-1-smin)*exp(obj.gainSigma*(obj.metaparams2(s, i)-0.25)))+smin; %0.1 default

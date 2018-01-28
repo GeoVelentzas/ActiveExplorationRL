@@ -12,7 +12,7 @@ classdef world
             %child's characteristics
             obj.child.head_angle = -pi/2; %!!! not changed?
             obj.child.head_radius = 1.4;
-            obj.child.head_pos = [0 4];
+            obj.child.head_pos = [0 3];
             obj.child.head_color = [0.95 0.95 1];
             obj.child.head_action_param = 0;
             obj.child.head_angle_des = -pi/2; %!!
@@ -46,9 +46,9 @@ classdef world
             obj.robot.left_grasp = 0;
             
             obj.robot.head_action_param = 0.5;
-            obj.map.pos1 = [-2.5 -1.2];
+            obj.map.pos1 = [-1.2 -2.1];
             obj.map.pos2 = [0 -1.2];
-            obj.map.pos3 = [2.5 -1.2];
+            obj.map.pos3 = [1.2 -2.1];
             %obj.map.pos4 = [4.3 -2.3];
             
             obj.robot.pos0 = [0 -1];
@@ -574,7 +574,7 @@ classdef world
                         end
                     end
                 % ACTION 5 %%%%%%%%%%%%%%%%%
-                case 5 %old 5 new 4
+                case 4 %old 5 new 4
                     % approach pos3...
                     obj.robot.head_angle_des = atan2(obj.map.pos2(2)-obj.robot.head_pos(2),obj.map.pos2(1)-obj.robot.head_pos(1));
                     while norm(obj.map.pos2 - obj.robot.right_arm_pos)>0.01

@@ -1,8 +1,8 @@
 function drawstate( obj )
 
 figure(1);
-subplot(3,10,[1:5, 11:15, 21:25]);
-hold on; xlim([-10 10]); ylim([-10 10]); box on; cla; hold on; axis square;
+%subplot(3,10,[1:5, 11:15, 21:25]);
+hold on; xlim([-9 9]); ylim([-9.5 8.5]); box on; cla; hold on; axis square;
 % set(gca,'color',[0.99 0.99 0.99]);
 set(gca,'color', [0.1 0.1 0.2]);
 set(gca,'xtick',[]);
@@ -10,9 +10,9 @@ set(gca,'ytick',[]);
 
 
 %% draw positions
-px1 = obj.map.pos1(1); py1 = obj.map.pos1(2); c1=[0.89 0.99 0.89]; r1=0.8;
-px2 = obj.map.pos2(1); py2 = obj.map.pos2(2); c2=[0.50 0.50 0.50]; r2=0.9;
-px3 = obj.map.pos3(1); py3 = obj.map.pos3(2); c3=[0.89 0.99 0.89]; r3=0.8;
+px1 = obj.map.pos1(1); py1 = obj.map.pos1(2); c1=[0.50 0.50 0.50]; r1=0.7;
+px2 = obj.map.pos2(1); py2 = obj.map.pos2(2); c2=[0.50 0.50 0.50]; r2=0.7;
+px3 = obj.map.pos3(1); py3 = obj.map.pos3(2); c3=[0.50 0.50 0.50]; r3=0.7;
 
 drawcircle(px1,py1,r1,c1,false);
 drawcircle(px3,py3,r3,c3,false);
