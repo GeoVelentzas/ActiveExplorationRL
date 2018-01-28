@@ -213,7 +213,7 @@ classdef world
             a = 1/p;
             beta = 0.2;
             gamma = 0.4;
-            sig = -pi*(eng-10)/10;
+            sig = -pi*(eng-10)/20;
             sig = min(sig, pi/2.5);
             sgn = 2*(randn>-1)-1;
             sig= sgn*sig;

@@ -12,7 +12,7 @@ classdef world
             %child's characteristics
             obj.child.head_angle = -pi/2; %!!! not changed?
             obj.child.head_radius = 1.4;
-            obj.child.head_pos = [0 4];
+            obj.child.head_pos = [0 3];
             obj.child.head_color = [0.95 0.95 1];
             obj.child.head_action_param = 0;
             obj.child.head_angle_des = -pi/2; %!!
@@ -212,10 +212,10 @@ classdef world
             p = 0.15 + 0.6*((param-100)/200+1);
             a = 1/p;
             beta = 0.2;
-            gamma = 0.4;
+            gamma = (eng-10)/10;
             sig = -pi*(eng-10)/10;
-            sig = min(sig, pi/2.5);
-            sgn = 2*(randn>-1)-1;
+            sig = min(sig, pi/3);
+            sgn = 2*(randn>-0.1)-1;
             sig= sgn*sig;
             switch act
                 % ACTION 1 %%%%%%%%%%%%%%%%%
@@ -231,7 +231,11 @@ classdef world
                             poi = obj.robot.left_arm_pos; %point of interest;
                             sample = datasample([0.1*randn-sig 0.1*randn+sig],1);
                             sample = datasample([0.1*randn-sig],1);
+                            sample = datasample([-sig sig],1);
                             theta = atan2(poi(2)-obj.child.head_pos(2), poi(1)-obj.child.head_pos(1));
+                            obj.child.head_angle = (1-beta)*obj.child.head_angle + beta*(theta+sample);
+                        else
+                            poi = obj.robot.left_arm_pos; %point of interest;
                             obj.child.head_angle = (1-beta)*obj.child.head_angle + beta*(theta+sample);
                         end
                         drawstate(obj);
@@ -574,7 +578,7 @@ classdef world
                         end
                     end
                 % ACTION 5 %%%%%%%%%%%%%%%%%
-                case 5 %old 5 new 4
+                case 4 %old 5 new 4
                     % approach pos3...
                     obj.robot.head_angle_des = atan2(obj.map.pos2(2)-obj.robot.head_pos(2),obj.map.pos2(1)-obj.robot.head_pos(1));
                     while norm(obj.map.pos2 - obj.robot.right_arm_pos)>0.01

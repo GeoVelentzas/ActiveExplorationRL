@@ -23,12 +23,12 @@ env.s = s_init;
 
 while env.s~=final;
     i = i+1;
-    if mod(i,500)==0
+    if mod(i,1000)==0
         CP = [CP i];
         %for j = 1:6
         %    env.P(j)= min(env.P(j)+10, 85);
         %end
-        env.P(6) = min(env.P(6)+10, 85);
+        env.P(6) = min(env.P(6)+20, 85);
     end
     E = [E env.cEng];
     s = env.s;

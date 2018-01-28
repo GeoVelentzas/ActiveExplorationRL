@@ -1,7 +1,7 @@
 function drawstate( obj )
 
 figure(1);
-%subplot(3,10,[1:5, 11:15, 21:25]);
+subplot(3,10,[1:5, 11:15, 21:25]);
 hold on; xlim([-9 9]); ylim([-9.5 8.5]); box on; cla; hold on; axis square;
 % set(gca,'color',[0.99 0.99 0.99]);
 set(gca,'color', [0.1 0.1 0.2]);
