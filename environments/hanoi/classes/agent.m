@@ -49,7 +49,7 @@ classdef agent
             obj.ACT(a) = min(obj.ACT(a), 100);
             p = obj.ACT(a); 
             for i = 1:obj.nA
-                smin = 2;   %minimum std
+                smin = 3;   %minimum std
                 smax = 40;   %maximum std
                 if i == a
                     obj.sigmas(s, i) = (smax-smin)./(1+(smax-1-smin)*exp(obj.gainSigma*(obj.metaparams2(s, i)-0.25)))+smin; %0.1 default
@@ -70,16 +70,27 @@ classdef agent
             obj.metaparams2(s,a) = obj.metaparams2(s,a) + obj.mu*(obj.stars2(s,a)-obj.mtars2(s,a));
             %obj.metaparams2(s,a) = min(0.5, obj.metaparams2(s,a));
             %obj.metaparams2(s,a) = max(-0.4, obj.metaparams2(s,a));
-            
+
+            %this will be computed (afterwards with a function approximator)
             newQvalues = obj.Q(sp,:);
+            
+            %reward prediction error for the actor
             deltaQ = r + obj.gamma*max(newQvalues) - obj.Q(s,a);
+
+            %(you should change this with function appriximator)
             obj.Q(s,a) = obj.Q(s,a) + obj.alphaQ*deltaQ;
 
+            %for one-hot vector the value is just the weights...
             value = obj.wC(sp);
+
+            %reward prediction error for the critic
             deltaV = r + obj.gamma*value - obj.VC;
+            
+            %update weights for the value function approximator
             obj.wC(s) = obj.wC(s) + obj.alphaC*deltaV;
             
             if deltaV>0
+            	%update the weights for the function approximator of thetas
                 obj.wA(s,a) = obj.wA(s,a) + obj.alphaA*deltaV*(p-obj.ACT(a));
             end
         end
