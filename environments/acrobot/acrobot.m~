@@ -1,0 +1,86 @@
+classdef acrobot
+    properties
+        q; qd; qdd; H; C; G; m1; m2; l1; l2; m3, m4; lc1; lc2; I1; I2;
+    end
+    
+    methods
+        function obj = acrobot(m1, m2, l1, l2, m3, m4)
+            obj.m1 = m1 + m3; %link+motor;
+            obj.m2 = m2 + m4; %link+end effector;
+            obj.l1 = l1;
+            obj.l2 = l2;
+            obj.m3 = m3; %motor weight;
+            obj.m4 = m4; %end effector weight;
+            obj.lc1 = (1/2*l1*m1 + l1*m3)/(m1+m3);
+            obj.lc2 = (1/2*l2*m2 + l2*m4)/(m2+m4);
+            obj.I1 = obj.m1*obj.lc1^2;
+            obj.I2 = obj.m2*obj.lc2^2;
+        end
+        
+        function obj = step(obj, u) %or try two params per action...
+            
+        H = [I1+I2+m2*l1^2+2*m2*l1*lc2*c2 , I2+m2*l1*lc2*c2;
+                I2+m2*l1*lc2*c2              , I2             ];
+        
+    C = [-2*m2*l1*lc2*s2*qd(2)        , -m2*l1*lc2*s2*qd(2);
+         m2*l1*lc2*s2*qd(1)           ,          0     ];
+    
+    G = [(m1*lc1+m2*l1)*g*s1 + m2*g*l2*s12;
+                  m2*g*l2*s12            ];
+    
+    B = [0; 1];
+    u = 0;
+    F = qd.*[-1;-0.01];
+            
+            
+            
+            
+            
+            
+            oldEng = obj.cEng;
+            if obj.O(obj.s,action) %action is optimal here...
+                obj.optimalP = obj.P(obj.ParamType(obj.s)); %optimal parameter at this state for the optimal action... 
+                H = (exp((- (p - obj.optimalP) ^ 2) / (2 * obj.engSig ^ 2)) - 0.5) * 2;
+                if H >= 0
+                    obj.cEng = obj.cEng + H * obj.reeng * (obj.maxEng - obj.cEng);
+                    r2 = 1;
+                else
+                    obj.cEng = obj.cEng - H * obj.forget * (obj.minEng - obj.cEng);
+                    r2 = -0;
+                end
+            else %action is not the optimal here....
+                obj.cEng = obj.cEng + obj.forget * (obj.minEng - obj.cEng);
+                r2 = -10;
+                obj.optimalP = 0; %no meaning...
+            end
+            r1 = (1 - obj.lambdaRwd) * (obj.cEng - 5) / 5 + obj.lambdaRwd * 2 * (obj.cEng - oldEng); % mixed reward function
+            obj.s = obj.T(obj.s, action);
+%             if obj.s == 26
+%                r2 = 1;
+%             end
+            r = r1+r2;%
+            %r = r1;
+            % add reward based on parameter value...
+            
+        end
+        
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
