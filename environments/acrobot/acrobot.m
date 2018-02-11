@@ -1,6 +1,6 @@
 classdef acrobot
     properties
-        q; qd; H; C; G; m1; m2; l1; l2; m3, m4; lc1; lc2; I1; I2; g; dt; friction
+        q; qd; H; C; G; m1; m2; l1; l2; m3, m4; lc1; lc2; I1; I2; g; dt; friction; state;
     end
     
     methods
@@ -11,68 +11,68 @@ classdef acrobot
             obj.l2 = l2;
             obj.m3 = m3; %motor weight;
             obj.m4 = m4; %end effector weight;
-            obj.lc1 = (1/2*l1*m1 + l1*m3)/(m1+m3);
-            obj.lc2 = (1/2*l2*m2 + l2*m4)/(m2+m4);
-            obj.I1 = obj.m1*obj.lc1^2;
-            obj.I2 = obj.m2*obj.lc2^2;
+            obj.lc1 = 1/2*l1;
+            obj.lc2 = 1/2*l2;
+            obj.I1 = 1/3*m1*l1^2 + m3*l1^2;
+            obj.I2 = 1/3*m2*l2^2 + m4*l2^2; 
             obj.g = 9.81;
-            obj.dt = 0.01;
+            obj.dt = 0.02;
             obj.q = [theta1; theta2];
             obj.qd = [0; 0];
+            obj.state = [obj.q;  obj.qd];
             obj.friction = friction;
             
         end
         
-        function obj = step(obj, u) %or try two params per action...
-            c1 = cos(obj.q(1));
-            c2 = cos(obj.q(2));
-            s1 = sin(obj.q(1));
-            s2 = sin(obj.q(2));
-            c12 = cos(obj.q(1) + obj.q(2));
-            s12 = sin(obj.q(1) + obj.q(2));
-            
-            H = [obj.I1+obj.I2+obj.m2*obj.l1^2+2*obj.m2*obj.l1*obj.lc2*c2 , obj.I2+obj.m2*obj.l1*obj.lc2*c2;
-                obj.I2+obj.m2*obj.l1*obj.lc2*c2              , obj.I2             ];
-            
-            C = [-2*obj.m2*obj.l1*obj.lc2*s2*obj.qd(2)        , -obj.m2*obj.l1*obj.lc2*s2*obj.qd(2);
-                obj.m2*obj.l1*obj.lc2*s2*obj.qd(1)           ,          0     ];
-            
-            G = [(obj.m1*obj.lc1+obj.m2*obj.l1)*obj.g*s1 + obj.m2*obj.g*obj.l2*s12;
-                obj.m2*obj.g*obj.l2*s12            ];
-            
-            B = [0; 1];
-            
-            F = obj.qd.*[-1;-0.1]*obj.friction;
-            
-            qdd = H\(-C*obj.qd - G + B*u +F);
-            
-            obj.q = obj.q + obj.qd*obj.dt + 1/2*qdd*obj.dt^2;
-            obj.qd = obj.qd + qdd*obj.dt;
-            
-            obj.q(1) = atan2(sin(obj.q(1)), cos(obj.q(1)));
-            obj.q(2) = atan2(sin(obj.q(2)), cos(obj.q(2)));
-            
+        function [obj,S,t] = step(obj, u) %or try two params per action...
+%             Opt    = odeset('Events', @Constraint);
+            x0 = obj.state;
+            tspan = [0 obj.dt];
+            [t,x] = ode45(@(t,x) doublependulum(t,x,u,obj), tspan, x0);
+            S = x';
+%             val = Constraint(t(end), x(end,:)');
+%             if val>0 && x(end,2)>0
+%                 x(end,4) = -1*x(end,4);
+%                 x(end,2) = pi - 0.06;
+%             elseif val>0&&x(end,2)<0
+%                 x(end,4) = -1*x(end,4);
+%                 x(end,2) = -pi + 0.06;
+%             end
+            obj.state = x(end,:);
+            obj.state = obj.state(:);
+            obj.state(1) = atan2(sin(obj.state(1)), cos(obj.state(1)));
+            obj.state(2) = atan2(sin(obj.state(2)), cos(obj.state(2)));
+            obj.q(1)  = obj.state(1);
+            obj.q(2)  = obj.state(2);
+            obj.qd(1) = obj.state(3);
+            obj.qd(2) = obj.state(4);
             
         end
         
         
-        function show(obj)
+        function show(obj,s)
             figure(1);
             cla;
+            q(1) = s(1);
+            q(2) = s(2);
             px0 = 0;
             py0 = 0;
-            px1 = obj.l1*sin(obj.q(1));
-            py1 =-obj.l1*cos(obj.q(1));
+            px1 = obj.l1*sin(q(1));
+            py1 =-obj.l1*cos(q(1));
             
-            px2 = px1 + obj.l2*sin(obj.q(1) + obj.q(2));
-            py2 = py1 - obj.l2*cos(obj.q(1) + obj.q(2));
+            px2 = px1 + obj.l2*sin(q(1) + q(2));
+            py2 = py1 - obj.l2*cos(q(1) + q(2));
             cla;
             plot([px0, px1], [py0, py1], 'k', 'LineWidth', 2);hold on;
-            plot([px1, px2], [py1, py2], 'r', 'LineWidth', 2);hold on;
+            plot([px1, px2], [py1, py2], 'k', 'LineWidth', 2);hold on;
             xlim([-3 3]); ylim([-3 3]);
+            plot(px1,py1,'ko', 'LineWidth', 2, 'MarkerFaceColor', 'k');
+            plot(px2,py2,'ko', 'LineWidth', 2, 'MarkerFaceColor', 'k');
+            plot(px0,py0,'ko', 'LineWidth', 1, 'MarkerFaceColor', 'w');
             drawnow;
         end
         
+                
     end
 end
 
